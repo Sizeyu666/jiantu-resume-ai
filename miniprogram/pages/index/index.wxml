@@ -1,0 +1,136 @@
+<!-- pages/index/index.wxml 首页 V3：大标题+slogan / 我的简历（导入+新建）/ 10 套免费模板 3 列 / 证件照入口 -->
+<view class="page">
+  <!-- 状态栏占位（自定义导航） -->
+  <view class="status-bar" style="height: {{statusBarHeight}}px;"></view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <view class="spinner"></view>
+    <view class="loading-text">加载中...</view>
+  </view>
+
+  <scroll-view wx:else scroll-y class="list" enhanced show-scrollbar="{{false}}">
+    <view class="list-inner">
+      <!-- ===== 顶部品牌区 ===== -->
+      <view class="hero">
+        <view class="hero-title">简途简历</view>
+        <view class="hero-slogan">免费AI润色 · 30套模板 · JD匹配</view>
+      </view>
+
+      <!-- ===== 我的简历 ===== -->
+      <view class="section-head">
+        <text class="section-title">我的简历</text>
+        <view class="head-actions">
+          <view class="head-btn head-btn-ghost" hover-class="head-btn-hover" bindtap="openImport">
+            <text class="head-btn-icon">📥</text><text>导入</text>
+          </view>
+          <view class="head-btn head-btn-primary" hover-class="head-btn-hover" bindtap="onCreate">
+            <text class="head-btn-plus">＋</text><text>新建</text>
+          </view>
+        </view>
+      </view>
+
+      <view
+        wx:for="{{resumes}}"
+        wx:key="_id"
+        class="card resume-card"
+        hover-class="card-hover"
+        bindtap="onTapCard"
+        data-id="{{item._id}}"
+      >
+        <view class="flex-between">
+          <view class="resume-title ellipsis">{{item.title}}</view>
+          <view class="more" catchtap="onMore" data-id="{{item._id}}" data-title="{{item.title}}">···</view>
+        </view>
+        <view class="progress-row">
+          <view class="progress-track">
+            <view class="progress-fill" style="width: {{item.percent}}%; background: {{item.barColor}};"></view>
+          </view>
+          <view class="progress-num">{{item.percent}}%</view>
+        </view>
+        <view class="resume-time">最后编辑 {{item.updatedText}}</view>
+      </view>
+
+      <!-- 空状态（内嵌） -->
+      <view wx:if="{{resumes.length === 0}}" class="empty-block">
+        <view class="empty-icon">📄</view>
+        <view class="empty-text">还没有简历，点击右上角「新建」空白简历，或选下面模板一键开始</view>
+        <button class="btn btn-ghost empty-btn" bindtap="onFillSample">填入示例数据看看效果</button>
+      </view>
+
+      <!-- ===== 精选模板（10 套全部免费，3 列） ===== -->
+      <view class="section-head tpl-section-head">
+        <text class="section-title">精选模板</text>
+        <text class="section-more" bindtap="goTemplate">全部模板 ›</text>
+      </view>
+
+      <view class="tpl-grid">
+        <view
+          class="tpl-card"
+          wx:for="{{templates}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="onSelectTemplate"
+          hover-class="card-hover"
+        >
+          <view class="tpl-mini m-{{item.variant}}" style="--c: {{item.defaultColor}};">
+            <view class="sk sk-title"></view>
+            <view class="sk sk-l1"></view>
+            <view class="sk sk-l2"></view>
+            <view class="sk sk-l3"></view>
+          </view>
+          <view class="tpl-name">{{item.name}}</view>
+        </view>
+      </view>
+
+      <!-- AI 证件照小入口 -->
+      <view class="idphoto-entry" hover-class="card-hover" bindtap="goIdPhoto">
+        <view class="idphoto-icon">📷</view>
+        <view class="idphoto-main">
+          <view class="idphoto-name">AI 证件照</view>
+          <view class="idphoto-desc">一键换底色，免费每日 3 次</view>
+        </view>
+        <view class="idphoto-arrow">›</view>
+      </view>
+      <view class="safe-bottom"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 重命名弹窗 -->
+  <view wx:if="{{renameVisible}}" class="modal-mask" bindtap="onRenameCancel">
+    <view class="modal" catchtap="noop">
+      <view class="modal-title">重命名简历</view>
+      <input class="modal-input" value="{{renameValue}}" bindinput="onRenameInput" maxlength="30" focus />
+      <view class="modal-btns">
+        <view class="modal-btn" bindtap="onRenameCancel">取消</view>
+        <view class="modal-btn modal-btn-primary" bindtap="onRenameConfirm">确定</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 导入简历弹窗 -->
+  <view wx:if="{{importVisible}}" class="modal-mask" bindtap="closeImport">
+    <view class="modal import-modal" catchtap="noop">
+      <view class="modal-title">导入已有简历</view>
+      <view class="import-tip">把旧简历的文字内容完整粘贴到下面，AI 会自动识别并整理成在线简历，识别后可继续编辑</view>
+      <textarea
+        class="import-textarea"
+        value="{{importText}}"
+        bindinput="onImportInput"
+        placeholder="粘贴简历全文（姓名、教育、经历、技能等内容越完整，识别越准确）"
+        maxlength="8000"
+        auto-height
+      />
+      <view class="modal-btns import-btns">
+        <view class="modal-btn" bindtap="closeImport">取消</view>
+        <view class="modal-btn modal-btn-primary {{importing ? 'modal-btn-disabled' : ''}}" bindtap="onImportConfirm">
+          {{importing ? '识别中...' : 'AI 智能解析'}}
+        </view>
+      </view>
+      <view class="import-ways">
+        <view class="import-way-item {{importing ? 'import-way-disabled' : ''}}" bindtap="onImportPdf">📄 上传 PDF 解析</view>
+        <view class="import-way-item {{importing ? 'import-way-disabled' : ''}}" bindtap="onImportOcr">🖼️ 上传图片识别</view>
+      </view>
+    </view>
+  </view>
+</view>

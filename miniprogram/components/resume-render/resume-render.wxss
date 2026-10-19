@@ -1,0 +1,491 @@
+/* components/resume-render/resume-render.wxss V3
+ * 严格遵循设计规范：
+ * A4 750×1059rpx；边距 左右40 上下50；姓名32 标题26 正文22 辅助20(#999)
+ * 板块间距40 条目间距20 行高1.6；照片80×100 直角小圆角4rpx
+ * 主题色通过根节点 --c 变量驱动
+ */
+
+/* 预览页自适应模式 */
+.rr-page.rr-auto {
+  height: auto;
+  min-height: 1059rpx;
+  overflow: visible;
+}
+
+.rr-page {
+  width: 750rpx;
+  height: 1059rpx;
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
+  color: #333333;
+  font-size: 22rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+.rr-flow {
+  padding: 50rpx 40rpx;
+  box-sizing: border-box;
+}
+
+/* ---------- 字号三档 ---------- */
+.fs-small { font-size: 20rpx; }
+.fs-small .hd-name { font-size: 30rpx; }
+.fs-small .sec-title { font-size: 24rpx; }
+.fs-large { font-size: 24rpx; }
+.fs-large .hd-name { font-size: 35rpx; }
+.fs-large .sec-title { font-size: 28rpx; }
+
+/* ---------- 间距三档 ---------- */
+.sp-compact .rr-flow { padding: 36rpx 40rpx; }
+.sp-compact .hd { margin-bottom: 24rpx; }
+.sp-compact .sec { margin-bottom: 26rpx; }
+.sp-compact .it { margin-bottom: 14rpx; }
+.sp-loose .rr-flow { padding: 64rpx 48rpx; }
+.sp-loose .hd { margin-bottom: 44rpx; }
+.sp-loose .sec { margin-bottom: 52rpx; }
+.sp-loose .it { margin-bottom: 26rpx; }
+
+/* ==================== 头部 ==================== */
+.hd { margin-bottom: 36rpx; }
+.hd-name { font-size: 32rpx; font-weight: 700; color: var(--c); letter-spacing: 1rpx; }
+.hd-intent { font-size: 22rpx; color: #333333; margin-top: 8rpx; }
+.hd-line { font-size: 20rpx; color: #999999; margin-top: 6rpx; }
+
+/* 居中头部（A1 无照片 / A3 照片右上时右侧留位） */
+.hd-center { text-align: center; position: relative; }
+.hd-center.hd-ava .hd-name,
+.hd-center.hd-ava .hd-intent,
+.hd-center.hd-ava .hd-line { margin-right: 104rpx; }
+
+/* 左对齐头部：信息左、照片右 */
+.hd-left { display: flex; align-items: flex-start; justify-content: space-between; }
+.hd-left .hd-info { flex: 1; min-width: 0; }
+
+/* 照片：80×100rpx（一寸照比例），直角小圆角，不重叠内容 */
+.hd-ava-img {
+  width: 80rpx;
+  height: 100rpx;
+  border-radius: 4rpx;
+  flex-shrink: 0;
+  margin-left: 20rpx;
+  background: #f2f2f2;
+}
+.hd-center .hd-ava-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-left: 0;
+}
+
+/* ==================== A5 信息表格头部 ==================== */
+.hd-table { margin-bottom: 32rpx; }
+.tbl-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 14rpx;
+  border-bottom: 3rpx solid #333333;
+}
+.tbl-name-row .hd-name { color: #1a1a1a; }
+.tbl-intent { font-size: 20rpx; color: #666666; }
+.info-tbl {
+  margin-top: 14rpx;
+  border-left: 1rpx solid #c9cdd4;
+  border-top: 1rpx solid #c9cdd4;
+}
+.info-row { display: flex; }
+.info-cell {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  border-right: 1rpx solid #c9cdd4;
+  border-bottom: 1rpx solid #c9cdd4;
+  min-width: 0;
+}
+.info-cell-empty { background: #fafbfc; }
+.info-label {
+  flex-shrink: 0;
+  width: 96rpx;
+  background: #f5f6f8;
+  color: #666666;
+  font-size: 20rpx;
+  text-align: center;
+  padding: 10rpx 0;
+  box-sizing: border-box;
+}
+.info-val {
+  flex: 1;
+  min-width: 0;
+  font-size: 20rpx;
+  color: #333333;
+  padding: 10rpx 14rpx;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+
+/* ==================== 板块 ==================== */
+.sec { margin-bottom: 40rpx; }
+.sec:last-child { margin-bottom: 0; }
+.sec-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--c);
+  padding-bottom: 8rpx;
+  margin-bottom: 18rpx;
+  border-bottom: 2rpx solid var(--c);
+}
+
+/* A1 经典灰条：灰色色块 + 白字 */
+.rv-gray-block .sec-title {
+  display: block;
+  background: var(--c);
+  color: #ffffff;
+  border-bottom: none;
+  border-radius: 2rpx;
+  padding: 10rpx 20rpx;
+  letter-spacing: 3rpx;
+  margin-bottom: 18rpx;
+}
+.rv-gray-block .hd-name { color: #1a1a1a; }
+
+/* A3 极简黑白：大写英文标题 + 中文小字，无颜色无装饰线 */
+.rv-bw-en .sec-title {
+  display: flex;
+  align-items: baseline;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 14rpx;
+  color: #111111;
+}
+.rv-bw-en .tv-en {
+  font-size: 25rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+  color: #111111;
+}
+.rv-bw-en .tv-cn {
+  font-size: 18rpx;
+  font-weight: 400;
+  color: #999999;
+  margin-left: 14rpx;
+  letter-spacing: 1rpx;
+}
+.rv-bw-en .hd-name { color: #111111; }
+.rv-bw-en .hd { border-bottom: 2rpx solid #111111; padding-bottom: 20rpx; }
+
+/* A4 左线装饰：标题左侧 3px 竖线 */
+.rv-left-bar .sec-title {
+  border-bottom: none;
+  border-left: 6rpx solid var(--c);
+  padding: 0 0 0 16rpx;
+  margin-bottom: 16rpx;
+  color: #1a1a1a;
+}
+
+/* ==================== 条目 ==================== */
+.it { margin-bottom: 20rpx; }
+.it:last-child { margin-bottom: 0; }
+.it-head { display: flex; align-items: baseline; justify-content: space-between; }
+.it-main { font-size: 22rpx; font-weight: 700; color: #1a1a1a; }
+.it-date { font-size: 20rpx; color: #999999; flex-shrink: 0; margin-left: 16rpx; }
+.it-sub { font-size: 22rpx; color: #444444; margin-top: 2rpx; }
+.it-dim { color: #888888; }
+
+/* bullet：实心小圆点 */
+.bl { position: relative; padding-left: 22rpx; margin-top: 6rpx; color: #333333; }
+.bl::before {
+  content: '';
+  position: absolute;
+  left: 6rpx;
+  top: calc(0.8em - 2rpx);
+  width: 7rpx;
+  height: 7rpx;
+  border-radius: 50%;
+  background: #555555;
+}
+
+/* ---------- 技能 ---------- */
+.sk-line { margin-top: 6rpx; color: #333333; }
+.sk-cat { font-weight: 700; color: #1a1a1a; }
+
+/* ---------- 自我评价 ---------- */
+.summary { text-align: justify; color: #333333; }
+
+/* ==================== 侧边栏布局 ==================== */
+.rv-side-dark .rr-flow,
+.rv-side-light .rr-flow { padding: 0; }
+.biz-wrap { display: flex; align-items: stretch; min-height: 1059rpx; }
+.biz-side {
+  width: 250rpx;
+  flex-shrink: 0;
+  color: #ffffff;
+  padding: 50rpx 26rpx;
+  box-sizing: border-box;
+  background: var(--c);
+}
+/* B3 浅色侧边栏 */
+.biz-side-light {
+  background: #f7fafc;
+  color: #2a2a2a;
+  border-right: 1rpx solid #e2e5ea;
+}
+/* 侧栏照片：80×100 居中顶部，直角小圆角 */
+.biz-ava {
+  display: block;
+  width: 80rpx;
+  height: 100rpx;
+  border-radius: 4rpx;
+  margin: 0 auto 24rpx;
+  background: rgba(255, 255, 255, 0.18);
+}
+.biz-name { font-size: 32rpx; font-weight: 700; letter-spacing: 1rpx; text-align: center; }
+.biz-intent { font-size: 20rpx; opacity: 0.88; margin-top: 10rpx; text-align: center; line-height: 1.5; }
+.biz-side-light .biz-intent { color: #555555; }
+.biz-blk { margin-top: 36rpx; }
+.biz-cap {
+  font-size: 23rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  padding-bottom: 8rpx;
+  margin-bottom: 12rpx;
+  border-bottom: 2rpx solid rgba(255, 255, 255, 0.35);
+}
+.biz-side-light .biz-cap {
+  color: var(--c);
+  border-bottom-color: #d5d9df;
+}
+.biz-line { font-size: 20rpx; line-height: 1.7; margin-top: 6rpx; word-break: break-all; }
+.biz-dim { opacity: 0.75; }
+.biz-skill { margin-top: 10rpx; }
+.biz-skill-cat { font-size: 20rpx; font-weight: 700; }
+.biz-main { flex: 1; padding: 50rpx 36rpx; box-sizing: border-box; min-width: 0; }
+.biz-main .sec-title {
+  color: var(--c);
+  border-bottom: 2rpx solid var(--c);
+}
+
+/* ==================== 智能压缩（会话级 density=compact） ==================== */
+.rr-compact { font-size: 20rpx; line-height: 1.45; }
+.rr-compact .rr-flow { padding: 36rpx 40rpx; }
+.rr-compact .hd { margin-bottom: 22rpx; }
+.rr-compact .hd-name { font-size: 30rpx; }
+.rr-compact .sec { margin-bottom: 24rpx; }
+.rr-compact .sec-title { font-size: 24rpx; margin-bottom: 12rpx; }
+.rr-compact .it { margin-bottom: 12rpx; }
+.rr-compact .it-main { font-size: 21rpx; }
+.rr-compact .it-date { font-size: 18rpx; }
+.rr-compact .it-sub { font-size: 20rpx; }
+.rr-compact .bl { margin-top: 3rpx; }
+.rr-compact .info-label,
+.rr-compact .info-val { font-size: 18rpx; padding: 8rpx 12rpx; }
+.rr-compact.rv-side-dark .rr-flow,
+.rr-compact.rv-side-light .rr-flow { padding: 0; }
+.rr-compact .biz-side { padding: 36rpx 22rpx; }
+.rr-compact .biz-main { padding: 36rpx 28rpx; }
+.rr-compact .biz-blk { margin-top: 24rpx; }
+
+/* ============================================================
+ * V4 新增模板样式（A7-A11 / B8-B12 / C1-C6 / D1-D4）
+ * ============================================================ */
+
+/* ---------- 无照片时的灰色占位框 ---------- */
+.hd-ava-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx dashed #d5d8dd;
+  background: #f5f6f8;
+  box-sizing: border-box;
+}
+.hd-ava-ph .ava-ph-txt { font-size: 18rpx; color: #b3b8c0; }
+.biz-ava-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx dashed rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.12);
+  box-sizing: border-box;
+}
+.biz-ava-ph .ava-ph-txt { font-size: 18rpx; color: rgba(255, 255, 255, 0.75); }
+
+/* ---------- B8 右侧边栏 / B9 渐变侧栏 ---------- */
+.rv-side-right .rr-flow,
+.rv-side-gradient .rr-flow { padding: 0; }
+.biz-wrap-right { flex-direction: row-reverse; }
+.biz-wrap-right .biz-main { padding: 50rpx 36rpx 50rpx 40rpx; }
+.biz-side-gradient { position: relative; overflow: hidden; }
+.biz-side-gradient::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.18) 100%);
+  pointer-events: none;
+}
+/* 渐变层在侧栏内容之下（不用通配选择器，微信 WXSS 不兼容） */
+.biz-side-gradient .biz-ava,
+.biz-side-gradient .biz-name,
+.biz-side-gradient .biz-intent,
+.biz-side-gradient .biz-blk { position: relative; z-index: 1; }
+
+/* ---------- A7 中英双语标题（与 A3 同构） ---------- */
+.rv-dual-title .sec-title {
+  display: flex;
+  align-items: baseline;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 14rpx;
+  color: #111111;
+}
+.rv-dual-title .tv-en {
+  font-size: 25rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+  color: #111111;
+}
+.rv-dual-title .tv-cn {
+  font-size: 18rpx;
+  font-weight: 400;
+  color: #999999;
+  margin-left: 14rpx;
+  letter-spacing: 1rpx;
+}
+.rv-dual-title .hd-name { color: #111111; }
+.rv-dual-title .hd { border-bottom: 2rpx solid #111111; padding-bottom: 20rpx; }
+
+/* ---------- A8 宽边距 ---------- */
+.rv-wide-margin .rr-flow { padding: 70rpx 88rpx; }
+
+/* ---------- A9 细横线标题 ---------- */
+.rv-thin-line .sec-title {
+  color: #1a1a1a;
+  border-bottom: 1rpx solid #d8d8d8;
+  font-size: 24rpx;
+}
+.rv-thin-line .hd-name { color: #1a1a1a; }
+
+/* ---------- C3 代码注释标题 ---------- */
+.rv-code-title .sec-title {
+  border-bottom: none;
+  color: #6a9955;
+  font-family: Consolas, Menlo, monospace;
+  font-size: 24rpx;
+  padding-bottom: 0;
+}
+.rv-code-title .sec-title::before { content: '// '; }
+.rv-code-title .bl::before { background: #6a9955; }
+
+/* ---------- C1 技能进度条 ---------- */
+.sk-bars { margin-top: 8rpx; }
+.sk-bar-cat { font-size: 22rpx; font-weight: 700; color: #1a1a1a; margin: 10rpx 0 6rpx; }
+.sk-bar-row { display: flex; align-items: center; margin-top: 8rpx; }
+.sk-bar-name {
+  width: 170rpx;
+  flex-shrink: 0;
+  font-size: 20rpx;
+  color: #333333;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.sk-bar-track {
+  flex: 1;
+  height: 12rpx;
+  background: #eef1f6;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+.sk-bar-fill { height: 100%; background: var(--c); border-radius: 6rpx; }
+
+/* ---------- C2 技能标签云 ---------- */
+.sk-tags { margin-top: 8rpx; }
+.sk-tag-cat { font-size: 20rpx; font-weight: 700; color: #1a1a1a; margin: 10rpx 0 8rpx; }
+.sk-tag-wrap { display: flex; flex-wrap: wrap; }
+.sk-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  color: var(--c);
+  background: rgba(30, 58, 95, 0.07);
+  border: 1rpx solid rgba(30, 58, 95, 0.18);
+  border-radius: 20rpx;
+  padding: 4rpx 18rpx;
+  margin: 0 12rpx 12rpx 0;
+}
+
+/* ---------- C4 卡片式经历 ---------- */
+.rv-tech-card .it {
+  background: #f8fafc;
+  border: 1rpx solid #e5e9f0;
+  border-radius: 14rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+}
+
+/* ---------- C5 时间轴 ---------- */
+.rv-tech-timeline .it {
+  position: relative;
+  margin-left: 10rpx;
+  padding-left: 28rpx;
+  border-left: 4rpx solid var(--c);
+}
+.rv-tech-timeline .it::before {
+  content: '';
+  position: absolute;
+  left: -10rpx;
+  top: 10rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4rpx solid var(--c);
+  box-sizing: border-box;
+}
+
+/* ---------- C6 双列并排 ---------- */
+.rv-tech-double .rr-flow { column-count: 2; column-gap: 36rpx; }
+.rv-tech-double .hd { column-span: all; }
+.rv-tech-double .sec { break-inside: avoid; width: 100%; }
+
+/* ---------- D1 花卉线条 ---------- */
+.rv-cre-flourish .sec-title::before { content: '❀ '; font-size: 22rpx; }
+.rv-cre-flourish .bl::before { background: var(--c); }
+
+/* ---------- D2 圆形头像 ---------- */
+.rv-ava-circle .hd-ava-img {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+}
+.rv-ava-circle .hd-center.hd-ava .hd-name,
+.rv-ava-circle .hd-center.hd-ava .hd-intent,
+.rv-ava-circle .hd-center.hd-ava .hd-line { margin-right: 120rpx; }
+
+/* ---------- D3 波浪底边装饰 ---------- */
+.rv-cre-wave::after {
+  content: '';
+  position: absolute;
+  left: -120rpx;
+  right: -120rpx;
+  bottom: -130rpx;
+  height: 220rpx;
+  border-radius: 50% 50% 0 0;
+  background: var(--c);
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+/* ---------- D4 手写感标题 ---------- */
+.rv-cre-hand .sec-title {
+  font-family: "KaiTi", "STKaiti", "Kaiti SC", cursive;
+  font-size: 30rpx;
+  color: var(--c);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.rv-cre-hand .hd-name {
+  font-family: "KaiTi", "STKaiti", "Kaiti SC", cursive;
+  font-weight: 700;
+  font-size: 36rpx;
+}

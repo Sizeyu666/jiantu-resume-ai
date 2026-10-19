@@ -1,0 +1,36 @@
+<!-- pages/template/template.wxml 模板广场 V3：10 套全部免费 · 分类筛选 · 3 列缩略图 -->
+<view class="page">
+  <view class="header">
+    <view class="header-title">模板广场</view>
+    <view class="header-sub">{{totalCount}} 套 ATS 友好专业排版，全部免费，点击即可使用</view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view scroll-x class="cat-bar" enhanced show-scrollbar="{{false}}">
+    <view
+      class="cat-item {{activeCat === item.key ? 'cat-item-on' : ''}}"
+      wx:for="{{cats}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onFilter"
+    >{{item.name}}</view>
+  </scroll-view>
+
+  <scroll-view scroll-y class="tpl-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="grid">
+      <view class="tpl-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="onTapCard" hover-class="card-hover">
+        <!-- 实时缩略预览（示例数据） -->
+        <view class="thumb">
+          <view class="thumb-scale">
+            <resume-render resume="{{item.demoResume}}" />
+          </view>
+        </view>
+        <view class="tpl-info">
+          <view class="tpl-name">{{item.name}}</view>
+          <view class="tpl-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="bottom-tip">更多模板持续更新中</view>
+  </scroll-view>
+</view>

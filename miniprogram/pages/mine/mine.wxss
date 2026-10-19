@@ -1,0 +1,128 @@
+/* pages/mine/mine.wxss */
+.page { padding: 32rpx 24rpx; padding-bottom: calc(160rpx + constant(safe-area-inset-bottom)); padding-bottom: calc(160rpx + env(safe-area-inset-bottom)); }
+
+/* ---------- 用户区 ---------- */
+.user { display: flex; align-items: center; padding: 12rpx 8rpx 28rpx; }
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-meta { margin-left: 24rpx; }
+.user-name { font-size: 34rpx; font-weight: 700; }
+.user-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  color: var(--text-sub);
+  background: #eef0f3;
+  border-radius: 6rpx;
+  padding: 2rpx 12rpx;
+  margin-top: 10rpx;
+}
+.user-tag-vip { color: #8a6400; background: #fdf3d3; }
+
+/* ---------- 会员卡片 ---------- */
+.vip-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  padding: 32rpx 32rpx;
+  background: linear-gradient(135deg, #1e3a5f, #2b4f7e);
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(30, 58, 95, 0.25);
+}
+.vip-card:active { opacity: 0.92; }
+.vip-card-on { background: linear-gradient(135deg, #b8860b, #d4a528); box-shadow: 0 8rpx 24rpx rgba(184, 134, 11, 0.3); }
+.vc-title { font-size: 34rpx; font-weight: 700; }
+.vc-desc { font-size: 22rpx; opacity: 0.85; margin-top: 10rpx; max-width: 440rpx; line-height: 1.5; }
+.vc-btn {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1e3a5f;
+  background: #ffffff;
+  border-radius: 999rpx;
+  padding: 14rpx 32rpx;
+  flex-shrink: 0;
+}
+.vc-btn-plain { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+
+/* ---------- 统计 ---------- */
+.stat {
+  display: flex;
+  align-items: center;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  margin-top: 24rpx;
+  padding: 28rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+.stat-item { flex: 1; text-align: center; }
+.stat-num { font-size: 40rpx; font-weight: 700; color: var(--primary); }
+.stat-label { font-size: 23rpx; color: var(--text-sub); margin-top: 6rpx; }
+.stat-div { width: 2rpx; height: 56rpx; background: var(--border); }
+
+/* ---------- 分组 ---------- */
+.group { margin-top: 32rpx; }
+.group-title { font-size: 26rpx; color: var(--text-sub); padding: 0 8rpx 14rpx; }
+
+.menu { padding: 0 28rpx; }
+.menu-row {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid #f0f1f3;
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-row:active { opacity: 0.7; }
+.menu-icon { font-size: 36rpx; margin-right: 22rpx; flex-shrink: 0; }
+.menu-main { flex: 1; min-width: 0; }
+.menu-name { font-size: 29rpx; }
+.menu-sub { font-size: 22rpx; color: var(--text-placeholder); margin-top: 6rpx; }
+.menu-tag {
+  font-size: 20rpx;
+  color: #8a6400;
+  background: #fdf3d3;
+  border-radius: 6rpx;
+  padding: 4rpx 14rpx;
+  margin-right: 12rpx;
+}
+.menu-arrow { font-size: 36rpx; color: #c4c8cf; }
+.menu-time { font-size: 22rpx; color: var(--text-placeholder); margin-right: 12rpx; }
+.menu-row-danger .menu-name { color: var(--danger); }
+
+.recent { padding: 0 28rpx; }
+.empty-line {
+  font-size: 24rpx;
+  color: var(--text-placeholder);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  text-align: center;
+  padding: 36rpx 0;
+}
+
+/* ---------- 广告位 ---------- */
+.ad-slot {
+  margin-top: 32rpx;
+  height: 140rpx;
+  border: 2rpx dashed #d8dbe0;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #c4c8cf;
+}
+
+.version {
+  text-align: center;
+  font-size: 21rpx;
+  color: var(--text-placeholder);
+  margin-top: 32rpx;
+}

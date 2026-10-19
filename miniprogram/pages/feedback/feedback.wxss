@@ -1,0 +1,43 @@
+/* pages/feedback/feedback.wxss */
+.page {
+  padding: 24rpx;
+}
+.card {
+  background: var(--card-bg, #fff);
+  border-radius: var(--radius, 16rpx);
+  padding: 24rpx 28rpx;
+  margin-bottom: 24rpx;
+}
+.label {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+.required { color: #ef4444; margin-left: 4rpx; }
+.content-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 280rpx;
+  font-size: 27rpx;
+  line-height: 1.7;
+  color: #1a1a1a;
+}
+.contact-input {
+  font-size: 27rpx;
+  height: 56rpx;
+}
+.ph { color: #b0b3b8; }
+.len {
+  text-align: right;
+  font-size: 22rpx;
+  color: #b0b3b8;
+}
+.tip {
+  font-size: 22rpx;
+  color: #909399;
+  line-height: 1.6;
+  padding: 0 8rpx;
+}
+.submit-btn {
+  margin-top: 40rpx;
+}

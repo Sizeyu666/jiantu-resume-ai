@@ -1,0 +1,554 @@
+<!-- pages/resume-edit/resume-edit.wxml 简历编辑器 V2 -->
+<wxs module="wxs">
+module.exports = {
+  join: function (arr) { return (arr || []).join('、'); }
+};
+</wxs>
+<view class="page" wx:if="{{resume}}">
+  <!-- ==================== 顶部 A4 实时预览条（200rpx 紧凑横条，点击放大） ==================== -->
+  <view class="pv-wrap" bindtap="goPreview">
+    <view class="pv-clip">
+      <view class="pv-scale">
+        <resume-render resume="{{previewResume}}" density="{{density}}" bindoverflowchange="onOverflowChange" />
+      </view>
+    </view>
+    <view class="pv-text">
+      <view class="pv-text-main">实时 A4 预览</view>
+      <view class="pv-text-sub">编辑内容实时渲染，点击放大查看</view>
+    </view>
+    <view class="pv-arrow">›</view>
+  </view>
+
+  <!-- 超页警告 + 智能压缩 -->
+  <view class="ov-warn" wx:if="{{overflow}}">
+    <text class="ov-text">当前内容已超出 1 页，建议精简到 1 页</text>
+    <text class="ov-btn" bindtap="onSmartCompress">智能压缩</text>
+  </view>
+
+  <!-- ==================== 基本信息（固定最前） ==================== -->
+  <view class="sec-card">
+    <view class="sec-head" bindtap="onToggleSection" data-key="basics">
+      <text class="sec-title">基本信息</text>
+      <text class="sec-arrow {{collapsed.basics ? 'sec-arrow-up' : ''}}">⌄</text>
+    </view>
+    <view class="sec-body" wx:if="{{!collapsed.basics}}">
+      <!-- 简历头像 -->
+      <view class="ava-row">
+        <view class="ava-box" bindtap="onChooseAvatar">
+          <image wx:if="{{avatarUrl}}" class="ava-img" src="{{avatarUrl}}" mode="aspectFill"></image>
+          <view wx:else class="ava-placeholder">
+            <text class="ava-plus">＋</text>
+            <text class="ava-photo-text">上传头像</text>
+          </view>
+          <view class="ava-mask" wx:if="{{avatarUploading}}">上传中</view>
+        </view>
+        <view class="ava-ops">
+          <view class="ava-tip">建议使用证件照，头像将显示在简历右上角/侧边栏（部分模板不带头像）</view>
+          <view class="ava-links">
+            <text class="ava-link" catchtap="goIdPhoto">没有照片？去 AI 证件照生成 →</text>
+            <text class="ava-remove" wx:if="{{avatarUrl}}" catchtap="onRemoveAvatar">移除</text>
+          </view>
+        </view>
+      </view>
+      <view class="fld">
+        <text class="fld-label">姓名 *</text>
+        <input class="fld-input" value="{{resume.basics.name}}" data-path="basics.name" bindinput="onFieldInput" placeholder="你的姓名" />
+      </view>
+      <view class="fld-row">
+        <view class="fld fld-half">
+          <text class="fld-label">手机号 *</text>
+          <input class="fld-input" type="number" value="{{resume.basics.phone}}" data-path="basics.phone" bindinput="onFieldInput" placeholder="11 位手机号" />
+        </view>
+        <view class="fld fld-half">
+          <text class="fld-label">邮箱 *</text>
+          <input class="fld-input" value="{{resume.basics.email}}" data-path="basics.email" bindinput="onFieldInput" placeholder="常用邮箱" />
+        </view>
+      </view>
+      <view class="fld-row">
+        <view class="fld fld-half">
+          <text class="fld-label">所在城市</text>
+          <input class="fld-input" value="{{resume.basics.city}}" data-path="basics.city" bindinput="onFieldInput" placeholder="如：上海" />
+        </view>
+        <view class="fld fld-half">
+          <text class="fld-label">意向岗位</text>
+          <input class="fld-input" value="{{resume.basics.jobIntent}}" data-path="basics.jobIntent" bindinput="onFieldInput" placeholder="如：后端开发（实习）" />
+        </view>
+      </view>
+      <view class="fld">
+        <text class="fld-label">GitHub（选填）</text>
+        <input class="fld-input" value="{{resume.basics.github}}" data-path="basics.github" bindinput="onFieldInput" placeholder="github.com/你的用户名" />
+      </view>
+      <view class="fld">
+        <text class="fld-label">个人博客（选填）</text>
+        <input class="fld-input" value="{{resume.basics.blog}}" data-path="basics.blog" bindinput="onFieldInput" placeholder="博客地址" />
+      </view>
+      <view class="fld">
+        <text class="fld-label">微信号（选填）</text>
+        <input class="fld-input" value="{{resume.basics.wechat}}" data-path="basics.wechat" bindinput="onFieldInput" placeholder="方便 HR 联系" />
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 可排序板块 ==================== -->
+  <view class="sec-card" wx:for="{{sectionList}}" wx:key="key">
+    <view class="sec-head" bindtap="onToggleSection" data-key="{{item.key}}" bindlongpress="enterSortMode">
+      <text class="sec-title">{{item.title}}</text>
+      <view class="sec-head-ops">
+        <text class="sec-manage" catchtap="onSectionManage" data-key="{{item.key}}">管理</text>
+        <text class="sec-arrow {{collapsed[item.key] ? 'sec-arrow-up' : ''}}">⌄</text>
+      </view>
+    </view>
+
+    <view class="sec-body" wx:if="{{!collapsed[item.key]}}">
+      <!-- ============ 教育经历 ============ -->
+      <block wx:if="{{item.key === 'education'}}">
+        <view class="itm" wx:for="{{resume.education}}" wx:for-item="edu" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">教育经历 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="education" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">学校</text>
+            <input class="fld-input" value="{{edu.school}}" data-path="education.{{index}}.school" bindinput="onFieldInput" placeholder="如：某某大学" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">学历</text>
+              <input class="fld-input" value="{{edu.degree}}" data-path="education.{{index}}.degree" bindinput="onFieldInput" placeholder="本科 / 硕士" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">专业</text>
+              <input class="fld-input" value="{{edu.major}}" data-path="education.{{index}}.major" bindinput="onFieldInput" placeholder="如：计算机科学与技术" />
+            </view>
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">开始时间</text>
+              <input class="fld-input" value="{{edu.start}}" data-path="education.{{index}}.start" bindinput="onFieldInput" placeholder="2021.09" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">结束时间</text>
+              <input class="fld-input" value="{{edu.end}}" data-path="education.{{index}}.end" bindinput="onFieldInput" placeholder="2025.06" />
+            </view>
+          </view>
+          <view class="fld">
+            <text class="fld-label">GPA / 排名（选填）</text>
+            <input class="fld-input" value="{{edu.gpa}}" data-path="education.{{index}}.gpa" bindinput="onFieldInput" placeholder="如：3.6/4.0（专业前 15%）" />
+          </view>
+          <view class="fld">
+            <text class="fld-label">相关课程（选填）</text>
+            <input class="fld-input" value="{{edu.courses}}" data-path="education.{{index}}.courses" bindinput="onFieldInput" placeholder="4-6 门与意向相关的课程" />
+          </view>
+          <!-- 亮点（无 AI） -->
+          <view class="blt-label">亮点（选填）</view>
+          <view class="blt" wx:for="{{edu.highlights}}" wx:for-item="h" wx:for-index="hi" wx:key="hi">
+            <textarea class="blt-input" value="{{h}}" data-path="education.{{index}}.highlights.{{hi}}" bindinput="onFieldInput" placeholder="如：获校级一等奖学金" auto-height maxlength="200" />
+            <text class="blt-del" catchtap="onRemoveLine" data-path="education.{{index}}.highlights" data-index="{{hi}}">×</text>
+          </view>
+          <view class="blt-add" catchtap="onAddLine" data-path="education.{{index}}.highlights">+ 添加亮点</view>
+        </view>
+      </block>
+
+      <!-- ============ 实习经历 ============ -->
+      <block wx:elif="{{item.key === 'experience'}}">
+        <view class="itm" wx:for="{{resume.experience}}" wx:for-item="exp" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">实习经历 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="experience" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">公司</text>
+            <input class="fld-input" value="{{exp.company}}" data-path="experience.{{index}}.company" bindinput="onFieldInput" placeholder="如：某互联网公司" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">岗位</text>
+              <input class="fld-input" value="{{exp.role}}" data-path="experience.{{index}}.role" bindinput="onFieldInput" placeholder="如：后端开发实习生" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">城市</text>
+              <input class="fld-input" value="{{exp.city}}" data-path="experience.{{index}}.city" bindinput="onFieldInput" placeholder="如：上海 / 远程" />
+            </view>
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">开始时间</text>
+              <input class="fld-input" value="{{exp.start}}" data-path="experience.{{index}}.start" bindinput="onFieldInput" placeholder="2024.06" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">结束时间</text>
+              <input class="fld-input" value="{{exp.end}}" data-path="experience.{{index}}.end" bindinput="onFieldInput" placeholder="2024.09" />
+            </view>
+          </view>
+          <view class="blt-label">工作内容（动词开头 + 量化成果）</view>
+          <view class="blt" wx:for="{{exp.bullets}}" wx:for-item="b" wx:for-index="bi" wx:key="bi">
+            <textarea class="blt-input" value="{{b}}" data-path="experience.{{index}}.bullets.{{bi}}" bindinput="onFieldInput" placeholder="如：负责订单接口开发，先写大概，再点 ✨ 润色" auto-height maxlength="300" />
+            <view class="blt-ops">
+              <text class="blt-ai" catchtap="onOpenPolish" data-path="experience.{{index}}.bullets.{{bi}}" data-type="polish">✨</text>
+              <text class="blt-del" catchtap="onRemoveLine" data-path="experience.{{index}}.bullets" data-index="{{bi}}">×</text>
+            </view>
+          </view>
+          <view class="blt-add" catchtap="onAddLine" data-path="experience.{{index}}.bullets">+ 添加一条</view>
+        </view>
+      </block>
+
+      <!-- ============ 项目经历 ============ -->
+      <block wx:elif="{{item.key === 'projects'}}">
+        <view class="itm" wx:for="{{resume.projects}}" wx:for-item="p" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">项目经历 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="projects" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">项目名称</text>
+            <input class="fld-input" value="{{p.name}}" data-path="projects.{{index}}.name" bindinput="onFieldInput" placeholder="如：校园二手交易平台" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">担任角色</text>
+              <input class="fld-input" value="{{p.role}}" data-path="projects.{{index}}.role" bindinput="onFieldInput" placeholder="如：独立开发者" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">技术栈（顿号分隔）</text>
+              <input class="fld-input" value="{{techTexts[index]}}" data-index="{{index}}" bindinput="onTechTextInput" placeholder="如：Vue、Node.js、MySQL" />
+            </view>
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">开始时间</text>
+              <input class="fld-input" value="{{p.start}}" data-path="projects.{{index}}.start" bindinput="onFieldInput" placeholder="2024.03" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">结束时间</text>
+              <input class="fld-input" value="{{p.end}}" data-path="projects.{{index}}.end" bindinput="onFieldInput" placeholder="2024.06" />
+            </view>
+          </view>
+          <view class="blt-label">项目描述（突出你的贡献与成果）</view>
+          <view class="blt" wx:for="{{p.bullets}}" wx:for-item="b" wx:for-index="bi" wx:key="bi">
+            <textarea class="blt-input" value="{{b}}" data-path="projects.{{index}}.bullets.{{bi}}" bindinput="onFieldInput" placeholder="做了什么、怎么做、结果如何，再点 ✨ 润色" auto-height maxlength="300" />
+            <view class="blt-ops">
+              <text class="blt-ai" catchtap="onOpenPolish" data-path="projects.{{index}}.bullets.{{bi}}" data-type="polish">✨</text>
+              <text class="blt-del" catchtap="onRemoveLine" data-path="projects.{{index}}.bullets" data-index="{{bi}}">×</text>
+            </view>
+          </view>
+          <view class="blt-add" catchtap="onAddLine" data-path="projects.{{index}}.bullets">+ 添加一条</view>
+        </view>
+      </block>
+
+      <!-- ============ 校园经历 ============ -->
+      <block wx:elif="{{item.key === 'campus'}}">
+        <view class="itm" wx:for="{{resume.campus}}" wx:for-item="c" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">校园经历 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="campus" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">组织 / 社团</text>
+            <input class="fld-input" value="{{c.org}}" data-path="campus.{{index}}.org" bindinput="onFieldInput" placeholder="如：校学生会技术部" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">担任角色</text>
+              <input class="fld-input" value="{{c.role}}" data-path="campus.{{index}}.role" bindinput="onFieldInput" placeholder="如：部长" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">开始时间</text>
+              <input class="fld-input" value="{{c.start}}" data-path="campus.{{index}}.start" bindinput="onFieldInput" placeholder="2022.09" />
+            </view>
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">结束时间</text>
+              <input class="fld-input" value="{{c.end}}" data-path="campus.{{index}}.end" bindinput="onFieldInput" placeholder="2023.06" />
+            </view>
+            <view class="fld fld-half"></view>
+          </view>
+          <view class="blt-label">经历描述</view>
+          <view class="blt" wx:for="{{c.bullets}}" wx:for-item="b" wx:for-index="bi" wx:key="bi">
+            <textarea class="blt-input" value="{{b}}" data-path="campus.{{index}}.bullets.{{bi}}" bindinput="onFieldInput" placeholder="如：统筹团队完成活动，再点 ✨ 润色" auto-height maxlength="300" />
+            <view class="blt-ops">
+              <text class="blt-ai" catchtap="onOpenPolish" data-path="campus.{{index}}.bullets.{{bi}}" data-type="polish">✨</text>
+              <text class="blt-del" catchtap="onRemoveLine" data-path="campus.{{index}}.bullets" data-index="{{bi}}">×</text>
+            </view>
+          </view>
+          <view class="blt-add" catchtap="onAddLine" data-path="campus.{{index}}.bullets">+ 添加一条</view>
+        </view>
+      </block>
+
+      <!-- ============ 专业技能 ============ -->
+      <block wx:elif="{{item.key === 'skills'}}">
+        <view class="itm" wx:for="{{resume.skills}}" wx:for-item="s" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">技能分类 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="skills" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">分类名</text>
+            <input class="fld-input" value="{{s.category}}" data-path="skills.{{index}}.category" bindinput="onFieldInput" placeholder="如：编程语言 / 框架工具 / 英语" />
+          </view>
+          <view class="fld">
+            <text class="fld-label">技能点（顿号分隔）</text>
+            <input class="fld-input" value="{{skillTexts[index]}}" data-index="{{index}}" bindinput="onSkillTextInput" placeholder="如：Java、Python、SQL" />
+          </view>
+        </view>
+      </block>
+
+      <!-- ============ 证书奖项 ============ -->
+      <block wx:elif="{{item.key === 'certificates'}}">
+        <view class="itm" wx:for="{{resume.certificates}}" wx:for-item="c" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">证书奖项 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="certificates" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">名称</text>
+            <input class="fld-input" value="{{c.name}}" data-path="certificates.{{index}}.name" bindinput="onFieldInput" placeholder="如：CET-6 / 一等奖学金 / 竞赛获奖" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">颁发机构（选填）</text>
+              <input class="fld-input" value="{{c.issuer}}" data-path="certificates.{{index}}.issuer" bindinput="onFieldInput" placeholder="如：某某大学" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">时间（选填）</text>
+              <input class="fld-input" value="{{c.date}}" data-path="certificates.{{index}}.date" bindinput="onFieldInput" placeholder="2023.05" />
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- ============ 工作经历（V2 新增） ============ -->
+      <block wx:elif="{{item.key === 'work'}}">
+        <view class="itm" wx:for="{{resume.work}}" wx:for-item="wk" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">工作经历 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="work" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">公司</text>
+            <input class="fld-input" value="{{wk.company}}" data-path="work.{{index}}.company" bindinput="onFieldInput" placeholder="如：某科技有限公司" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">岗位</text>
+              <input class="fld-input" value="{{wk.role}}" data-path="work.{{index}}.role" bindinput="onFieldInput" placeholder="如：Java 开发工程师" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">城市</text>
+              <input class="fld-input" value="{{wk.city}}" data-path="work.{{index}}.city" bindinput="onFieldInput" placeholder="如：深圳" />
+            </view>
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">开始时间</text>
+              <input class="fld-input" value="{{wk.start}}" data-path="work.{{index}}.start" bindinput="onFieldInput" placeholder="2023.07" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">结束时间</text>
+              <input class="fld-input" value="{{wk.end}}" data-path="work.{{index}}.end" bindinput="onFieldInput" placeholder="至今 / 2025.03" />
+            </view>
+          </view>
+          <view class="blt-label">工作内容（动词开头 + 量化成果）</view>
+          <view class="blt" wx:for="{{wk.bullets}}" wx:for-item="b" wx:for-index="bi" wx:key="bi">
+            <textarea class="blt-input" value="{{b}}" data-path="work.{{index}}.bullets.{{bi}}" bindinput="onFieldInput" placeholder="如：负责核心模块开发，再点 ✨ 润色" auto-height maxlength="300" />
+            <view class="blt-ops">
+              <text class="blt-ai" catchtap="onOpenPolish" data-path="work.{{index}}.bullets.{{bi}}" data-type="polish">✨</text>
+              <text class="blt-del" catchtap="onRemoveLine" data-path="work.{{index}}.bullets" data-index="{{bi}}">×</text>
+            </view>
+          </view>
+          <view class="blt-add" catchtap="onAddLine" data-path="work.{{index}}.bullets">+ 添加一条</view>
+        </view>
+      </block>
+
+      <!-- ============ 获奖荣誉（V2 新增） ============ -->
+      <block wx:elif="{{item.key === 'awards'}}">
+        <view class="itm" wx:for="{{resume.awards}}" wx:for-item="aw" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">获奖荣誉 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="awards" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld">
+            <text class="fld-label">奖项名称</text>
+            <input class="fld-input" value="{{aw.name}}" data-path="awards.{{index}}.name" bindinput="onFieldInput" placeholder="如：全国大学生数学建模竞赛省一等奖" />
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">颁发机构（选填）</text>
+              <input class="fld-input" value="{{aw.issuer}}" data-path="awards.{{index}}.issuer" bindinput="onFieldInput" placeholder="如：中国工业与应用数学学会" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">时间（选填）</text>
+              <input class="fld-input" value="{{aw.date}}" data-path="awards.{{index}}.date" bindinput="onFieldInput" placeholder="2023.09" />
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- ============ 语言能力（V2 新增） ============ -->
+      <block wx:elif="{{item.key === 'languages'}}">
+        <view class="itm" wx:for="{{resume.languages}}" wx:for-item="lg" wx:key="id">
+          <view class="itm-head">
+            <text class="itm-no">语言能力 {{index + 1}}</text>
+            <text class="itm-del" catchtap="onRemoveItem" data-section="languages" data-index="{{index}}">删除</text>
+          </view>
+          <view class="fld-row">
+            <view class="fld fld-half">
+              <text class="fld-label">语种</text>
+              <input class="fld-input" value="{{lg.name}}" data-path="languages.{{index}}.name" bindinput="onFieldInput" placeholder="如：英语" />
+            </view>
+            <view class="fld fld-half">
+              <text class="fld-label">水平 / 证书</text>
+              <input class="fld-input" value="{{lg.level}}" data-path="languages.{{index}}.level" bindinput="onFieldInput" placeholder="如：CET-6（560）/ 流利" />
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- ============ 自定义板块（V2 新增） ============ -->
+      <block wx:elif="{{item.custom}}">
+        <!-- 经历列表 -->
+        <block wx:if="{{item.kind === 'bullets'}}">
+          <view class="blt" wx:for="{{resume.customSections[item.ci].bullets}}" wx:for-item="b" wx:for-index="bi" wx:key="bi">
+            <textarea class="blt-input" value="{{b}}" data-path="customSections.{{item.ci}}.bullets.{{bi}}" bindinput="onFieldInput" placeholder="逐条描述一段经历，再点 ✨ 润色" auto-height maxlength="300" />
+            <view class="blt-ops">
+              <text class="blt-ai" catchtap="onOpenPolish" data-path="customSections.{{item.ci}}.bullets.{{bi}}" data-type="polish">✨</text>
+              <text class="blt-del" catchtap="onRemoveLine" data-path="customSections.{{item.ci}}.bullets" data-index="{{bi}}">×</text>
+            </view>
+          </view>
+          <view class="blt-add" catchtap="onAddCustomItem" data-ci="{{item.ci}}" data-kind="bullets">+ 添加一条</view>
+        </block>
+        <!-- 纯文本段落 -->
+        <block wx:elif="{{item.kind === 'text'}}">
+          <textarea class="sum-input" value="{{resume.customSections[item.ci].text}}" data-path="customSections.{{item.ci}}.text" bindinput="onFieldInput" placeholder="输入该板块内容" auto-height maxlength="800" />
+        </block>
+        <!-- 技能清单 -->
+        <block wx:elif="{{item.kind === 'skills'}}">
+          <view class="itm" wx:for="{{resume.customSections[item.ci].groups}}" wx:for-item="g" wx:for-index="gi" wx:key="id">
+            <view class="itm-head">
+              <text class="itm-no">技能分类 {{gi + 1}}</text>
+              <text class="itm-del" catchtap="onRemoveCustomItem" data-ci="{{item.ci}}" data-kind="skills" data-index="{{gi}}">删除</text>
+            </view>
+            <view class="fld">
+              <text class="fld-label">分类名（选填）</text>
+              <input class="fld-input" value="{{g.category}}" data-path="customSections.{{item.ci}}.groups.{{gi}}.category" bindinput="onFieldInput" placeholder="如：设计工具 / 外语" />
+            </view>
+            <view class="fld">
+              <text class="fld-label">技能点（顿号分隔）</text>
+              <input class="fld-input" value="{{wxs.join(g.items)}}" data-path="customSections.{{item.ci}}.groups.{{gi}}.items" bindinput="onCustomSkillItemsInput" placeholder="如：Photoshop、Figma、Sketch" />
+            </view>
+          </view>
+          <view class="sec-add" catchtap="onAddCustomItem" data-ci="{{item.ci}}" data-kind="skills">+ 添加技能分类</view>
+        </block>
+        <!-- 证书 / 荣誉清单 -->
+        <block wx:else>
+          <view class="itm" wx:for="{{resume.customSections[item.ci].rows}}" wx:for-item="rw" wx:for-index="ri" wx:key="id">
+            <view class="itm-head">
+              <text class="itm-no">记录 {{ri + 1}}</text>
+              <text class="itm-del" catchtap="onRemoveCustomItem" data-ci="{{item.ci}}" data-kind="certs" data-index="{{ri}}">删除</text>
+            </view>
+            <view class="fld-row">
+              <view class="fld fld-half">
+                <text class="fld-label">名称</text>
+                <input class="fld-input" value="{{rw.name}}" data-path="customSections.{{item.ci}}.rows.{{ri}}.name" bindinput="onFieldInput" placeholder="证书 / 荣誉名称" />
+              </view>
+              <view class="fld fld-half">
+                <text class="fld-label">说明（选填）</text>
+                <input class="fld-input" value="{{rw.detail}}" data-path="customSections.{{item.ci}}.rows.{{ri}}.detail" bindinput="onFieldInput" placeholder="等级 / 时间等" />
+              </view>
+            </view>
+          </view>
+          <view class="sec-add" catchtap="onAddCustomItem" data-ci="{{item.ci}}" data-kind="certs">+ 添加一条记录</view>
+        </block>
+      </block>
+
+      <!-- ============ 自我评价 ============ -->
+      <block wx:elif="{{item.key === 'summary'}}">
+        <textarea class="sum-input" value="{{resume.summary}}" data-path="summary" bindinput="onFieldInput" placeholder="2-3 句话突出匹配度，不空话。也可以点下方按钮让 AI 根据简历内容生成" auto-height maxlength="500" />
+        <view class="sum-ai" catchtap="onOpenPolish" data-type="summary">
+          <text class="sum-ai-icon">✨</text>
+          <text>AI 帮我写自我评价</text>
+        </view>
+      </block>
+
+      <!-- 数组板块：添加条目按钮 -->
+      <view class="sec-add" wx:if="{{item.addText}}" catchtap="onAddItem" data-section="{{item.key}}">
+        + {{item.addText}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加板块 + 板块排序入口 -->
+  <view class="edit-entries">
+    <view class="add-section-entry" bindtap="openAddPanel">＋ 添加板块</view>
+    <view class="sort-entry" bindtap="enterSortMode">⇅ 调整板块顺序</view>
+  </view>
+
+  <!-- 导出简历（跳转预览页导出） -->
+  <view class="export-entry btn btn-primary" bindtap="goPreview">导出简历</view>
+
+  <view class="foot-tip">内容自动保存 · 长按板块标题也可排序</view>
+
+  <!-- ==================== 添加板块面板 ==================== -->
+  <view class="sort-mask" wx:if="{{addPanelShow}}" catchtap="closeAddPanel">
+    <view class="add-panel" catchtap="noop">
+      <view class="sort-head">
+        <text class="sort-title">添加板块</text>
+        <text class="sort-done" bindtap="closeAddPanel">完成</text>
+      </view>
+      <view class="add-tip">标准板块可在添加后通过"管理"重命名或移除；也可以创建完全自定义的板块</view>
+      <view class="add-list">
+        <view
+          class="add-row {{item.added ? 'add-row-disabled' : ''}}"
+          wx:for="{{addableList}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          data-added="{{item.added}}"
+          bindtap="onTapAddable"
+        >
+          <view class="add-row-main">
+            <text class="add-row-title">{{item.title}}</text>
+            <text class="add-row-hint" wx:if="{{item.hint}}">{{item.hint}}</text>
+          </view>
+          <text class="add-row-state">{{item.added ? '已添加' : (item.key === '__custom__' ? '自定义' : '添加')}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 板块排序面板 ==================== -->
+  <view class="sort-mask" wx:if="{{sortMode}}" catchtouchmove="noop">
+    <view class="sort-panel">
+      <view class="sort-head">
+        <text class="sort-title">拖拽调整板块顺序</text>
+        <text class="sort-done" bindtap="onSortDone">完成</text>
+      </view>
+      <view class="sort-tip">基本信息固定在最上方，不参与排序</view>
+      <view class="sort-list" catchtouchmove="noop">
+        <view
+          class="sort-row {{dragIndex === index ? 'sort-row-active' : ''}}"
+          wx:for="{{sortList}}"
+          wx:key="key"
+          style="{{dragIndex === index ? 'transform: translateY(' + dragOffset + 'px);' : ''}}"
+          data-index="{{index}}"
+          catchtouchstart="onSortTouchStart"
+          catchtouchmove="onSortTouchMove"
+          catchtouchend="onSortTouchEnd"
+          catchtouchcancel="onSortTouchEnd"
+        >
+          <text class="sort-row-title">{{item.title}}</text>
+          <text class="sort-grip">≡</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== AI 润色弹窗 ==================== -->
+  <ai-polish-modal
+    show="{{polishShow}}"
+    original-text="{{polishOriginal}}"
+    action-type="{{polishType}}"
+    resume="{{previewResume}}"
+    bindadopt="onPolishAdopt"
+    bindclose="onPolishClose"
+  />
+</view>

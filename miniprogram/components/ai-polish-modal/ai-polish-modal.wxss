@@ -1,0 +1,123 @@
+/* components/ai-polish-modal/ai-polish-modal.wxss 底部弹出面板 */
+.pm-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+.pm-panel {
+  width: 100%;
+  max-height: 85vh;
+  background: #ffffff;
+  border-radius: 24rpx 24rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  animation: pm-up 0.25s ease;
+}
+@keyframes pm-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* ---------- 头部 ---------- */
+.pm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 20rpx;
+}
+.pm-title { font-size: 32rpx; font-weight: 700; }
+.pm-close { font-size: 32rpx; color: #9aa0a6; padding: 8rpx 16rpx; }
+.pm-trust {
+  padding: 0 32rpx 12rpx;
+  font-size: 21rpx;
+  color: #9aa0a6;
+  line-height: 1.5;
+}
+
+/* ---------- 内容 ---------- */
+.pm-body { padding: 0 32rpx; max-height: 58vh; box-sizing: border-box; }
+.pm-label { font-size: 24rpx; color: #6b7280; margin: 16rpx 0 12rpx; }
+
+.pm-original {
+  background: #f6f7f9;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.pm-result {
+  width: 100%;
+  min-height: 200rpx;
+  background: #ffffff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+/* ---------- loading ---------- */
+.pm-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+.pm-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid #e5e7eb;
+  border-top-color: #1e3a5f;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  animation: pm-rot 0.8s linear infinite;
+}
+@keyframes pm-rot {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- 错误 ---------- */
+.pm-error { padding: 48rpx 0; text-align: center; }
+.pm-error-text { font-size: 26rpx; color: #d93025; line-height: 1.6; }
+.pm-retry {
+  display: inline-block;
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: #1e3a5f;
+  border: 2rpx solid #1e3a5f;
+  border-radius: 999rpx;
+  padding: 8rpx 40rpx;
+}
+
+.pm-quota { font-size: 22rpx; color: #9aa0a6; text-align: center; margin-top: 20rpx; }
+
+/* ---------- 底部按钮 ---------- */
+.pm-foot {
+  display: flex;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+}
+.pm-btn {
+  flex: 1;
+  margin: 0 12rpx;
+  font-size: 28rpx;
+  border-radius: 999rpx;
+  padding: 16rpx 0;
+  line-height: 1.4;
+}
+.pm-btn::after { border: none; }
+.pm-btn-ghost { background: #f6f7f9; color: #1a1a1a; }
+.pm-btn-main { background: #1e3a5f; color: #ffffff; }
+.pm-btn-disabled { background: #c7ccd4; color: #ffffff; }

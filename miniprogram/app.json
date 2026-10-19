@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/resume-edit/resume-edit",
+    "pages/resume-preview/resume-preview",
+    "pages/template/template",
+    "pages/jd-match/jd-match",
+    "pages/id-photo/id-photo",
+    "pages/mine/mine",
+    "pages/vip/vip",
+    "pages/feedback/feedback",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "简途简历AI版",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f8fafc"
+  },
+  "tabBar": {
+    "color": "#9aa0a6",
+    "selectedColor": "#1e3a5f",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "简历"
+      },
+      {
+        "pagePath": "pages/template/template",
+        "text": "模板"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,51 @@
+<!-- pages/privacy/privacy.wxml 隐私协议 -->
+<view class="page">
+  <view class="doc card">
+    <view class="doc-title">简途简历隐私协议</view>
+    <view class="doc-updated">更新日期：{{updatedAt}}</view>
+
+    <view class="sec">
+      <view class="sec-h">一、我们收集什么</view>
+      <view class="sec-p">本小程序仅收集你主动填写的简历内容，包括：姓名、手机号、邮箱、教育经历、实习与项目经历、技能、证书及自我评价等，用于生成和导出你的简历。</view>
+      <view class="sec-p">我们不收集你的通讯录、位置、设备标识符等与简历制作无关的信息。</view>
+    </view>
+
+    <view class="sec">
+      <view class="sec-h">二、数据存储在哪里</view>
+      <view class="sec-p">你的全部简历数据仅存储于微信云开发（CloudBase）提供的云端数据库中，与你的微信身份（openid）绑定，仅你本人可读写。</view>
+      <view class="sec-p">我们不会将你的简历数据提供、出售或分享给任何第三方，也不会用于简历制作以外的用途。</view>
+    </view>
+
+    <view class="sec">
+      <view class="sec-h">三、AI 功能如何处理你的文本</view>
+      <view class="sec-p">当你主动使用"AI 润色""自我评价生成""JD 匹配""简历体检"功能时，你提交的对应文本会通过云函数发送至 AI 服务提供商（DeepSeek）进行实时分析与改写，以返回优化结果。</view>
+      <view class="sec-p">请注意：</view>
+      <view class="sec-li">· 仅你点击触发的文本会被发送，未使用 AI 功能的内容不会外传；</view>
+      <view class="sec-li">· AI 返回内容仅供参考，请自行核对真实性；</view>
+      <view class="sec-li">· 请勿在简历文本中填写身份证号、银行卡号等敏感信息。</view>
+    </view>
+
+    <view class="sec">
+      <view class="sec-h">四、证件照</view>
+      <view class="sec-p">证件照功能需要将照片上传至微信云开发存储，并调用腾讯云人像分割接口实时处理，处理结果仅用于生成证件照，不作其他用途；你可在「我的」页面一键删除相关数据。</view>
+    </view>
+
+    <view class="sec">
+      <view class="sec-h">五、本地缓存</view>
+      <view class="sec-p">AI 每日使用次数等偏好数据存储在你手机本地（小程序缓存），卸载或清除小程序数据后即会删除。</view>
+    </view>
+
+    <view class="sec">
+      <view class="sec-h">六、你可以随时删除全部数据</view>
+      <view class="sec-p">你可以点击下方按钮，一键删除云端的全部简历数据，删除后不可恢复。也可以在微信中直接卸载小程序以清除本地缓存。</view>
+    </view>
+
+    <view class="sec">
+      <view class="sec-h">七、联系我们</view>
+      <view class="sec-p">如对本协议或数据处理有疑问，可通过小程序内反馈渠道联系我们。</view>
+    </view>
+  </view>
+
+  <button class="btn btn-danger-ghost delete-btn" bindtap="onDeleteAll">一键删除我的全部数据</button>
+  <view class="bottom-note">删除操作不可恢复，请谨慎操作</view>
+</view>

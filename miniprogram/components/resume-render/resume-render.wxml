@@ -1,0 +1,207 @@
+<!-- components/resume-render/resume-render.wxml V3 A4 简历渲染器（10 套精修模板：variant 样式变体驱动） -->
+<wxs module="fmt">
+module.exports = {
+  cert: function (it) { return [it.name, it.date].filter(Boolean).join('  '); }
+};
+</wxs>
+
+<!-- ==================== 板块内容片段（单栏主区 / 侧边栏模板主区共用） ==================== -->
+<template name="secBody">
+  <!-- 教育经历 -->
+  <block wx:if="{{s.kind === 'edu'}}">
+    <view class="it" wx:for="{{s.items}}" wx:for-item="edu" wx:key="id">
+      <view class="it-head"><text class="it-main">{{edu.school}}</text><text class="it-date">{{edu.period}}</text></view>
+      <view class="it-sub" wx:if="{{edu.subLine}}">{{edu.subLine}}</view>
+      <view class="it-sub it-dim" wx:if="{{edu.courses}}">相关课程：{{edu.courses}}</view>
+      <view class="bl" wx:for="{{edu.highlights}}" wx:for-item="h" wx:for-index="hi" wx:key="hi">{{h}}</view>
+    </view>
+  </block>
+
+  <!-- 实习 / 工作经历（同一渲染结构） -->
+  <block wx:elif="{{s.kind === 'exp'}}">
+    <view class="it" wx:for="{{s.items}}" wx:for-item="exp" wx:key="id">
+      <view class="it-head"><text class="it-main">{{exp.company || exp.org}}</text><text class="it-date">{{exp.period}}</text></view>
+      <view class="it-sub" wx:if="{{exp.roleLine}}">{{exp.roleLine}}</view>
+      <view class="bl" wx:for="{{exp.bullets}}" wx:for-item="t" wx:for-index="bi" wx:key="bi">{{t}}</view>
+    </view>
+  </block>
+
+  <!-- 项目经历 -->
+  <block wx:elif="{{s.kind === 'project'}}">
+    <view class="it" wx:for="{{s.items}}" wx:for-item="p" wx:key="id">
+      <view class="it-head"><text class="it-main">{{p.name}}</text><text class="it-date">{{p.period}}</text></view>
+      <view class="it-sub" wx:if="{{p.role}}">{{p.role}}<text class="it-dim" wx:if="{{p.techText}}"> · {{p.techText}}</text></view>
+      <view class="bl" wx:for="{{p.bullets}}" wx:for-item="t" wx:for-index="bi" wx:key="bi">{{t}}</view>
+    </view>
+  </block>
+
+  <!-- 校园经历 -->
+  <block wx:elif="{{s.kind === 'campus'}}">
+    <view class="it" wx:for="{{s.items}}" wx:for-item="c" wx:key="id">
+      <view class="it-head"><text class="it-main">{{c.org}}</text><text class="it-date">{{c.period}}</text></view>
+      <view class="it-sub" wx:if="{{c.role}}">{{c.role}}</view>
+      <view class="bl" wx:for="{{c.bullets}}" wx:for-item="t" wx:for-index="bi" wx:key="bi">{{t}}</view>
+    </view>
+  </block>
+
+  <!-- 专业技能 -->
+  <block wx:elif="{{s.kind === 'skill'}}">
+    <!-- C1 进度条 -->
+    <block wx:if="{{s.skillStyle === 'bars'}}">
+      <view class="sk-bars" wx:for="{{s.items}}" wx:for-item="sk" wx:key="id">
+        <view class="sk-bar-cat" wx:if="{{sk.category}}">{{sk.category}}</view>
+        <view class="sk-bar-row" wx:for="{{sk.itemLevels}}" wx:for-item="lv" wx:for-index="li" wx:key="*this">
+          <text class="sk-bar-name">{{sk.items[li]}}</text>
+          <view class="sk-bar-track"><view class="sk-bar-fill" style="width: {{lv}}%;"></view></view>
+        </view>
+      </view>
+    </block>
+    <!-- C2 标签云 -->
+    <block wx:elif="{{s.skillStyle === 'tags'}}">
+      <view class="sk-tags" wx:for="{{s.items}}" wx:for-item="sk" wx:key="id">
+        <view class="sk-tag-cat" wx:if="{{sk.category}}">{{sk.category}}</view>
+        <view class="sk-tag-wrap">
+          <text class="sk-tag" wx:for="{{sk.items}}" wx:for-item="t" wx:for-index="ti" wx:key="*this">{{t}}</text>
+        </view>
+      </view>
+    </block>
+    <!-- 默认文本行 -->
+    <block wx:else>
+      <view class="sk-line" wx:for="{{s.items}}" wx:for-item="sk" wx:key="id">
+        <text class="sk-cat" wx:if="{{sk.category}}">{{sk.category}}：</text>{{sk.itemsText}}
+      </view>
+    </block>
+  </block>
+  <block wx:elif="{{s.kind === 'custom-skills'}}">
+    <view class="sk-line" wx:for="{{s.items}}" wx:for-item="sk" wx:key="id">
+      <text class="sk-cat" wx:if="{{sk.category}}">{{sk.category}}：</text>{{sk.itemsText}}
+    </view>
+  </block>
+
+  <!-- 证书 / 获奖 -->
+  <block wx:elif="{{s.kind === 'cert' || s.kind === 'custom-certs'}}">
+    <view class="it" wx:for="{{s.items}}" wx:for-item="c" wx:key="id">
+      <view class="it-head"><text class="it-main">{{c.name}}</text><text class="it-date">{{c.date}}</text></view>
+      <view class="it-sub it-dim" wx:if="{{c.issuer}}">{{c.issuer}}</view>
+    </view>
+  </block>
+
+  <!-- 语言能力 -->
+  <block wx:elif="{{s.kind === 'language'}}">
+    <view class="it" wx:for="{{s.items}}" wx:for-item="l" wx:key="id">
+      <view class="it-head"><text class="it-main">{{l.name}}</text><text class="it-date">{{l.level}}</text></view>
+    </view>
+  </block>
+
+  <!-- 纯文本（自我评价 / 自定义文本） -->
+  <block wx:elif="{{s.kind === 'text' || s.kind === 'custom-text'}}">
+    <view class="summary">{{s.text}}</view>
+  </block>
+
+  <!-- 自定义条目列表 -->
+  <block wx:elif="{{s.kind === 'custom-bullets'}}">
+    <view class="bl" wx:for="{{s.items[0].bullets}}" wx:for-item="t" wx:for-index="bi" wx:key="bi">{{t}}</view>
+  </block>
+</template>
+
+<!-- ==================== 页面主体 ==================== -->
+<view class="rr-page rv-{{vm.variant}} {{density === 'compact' ? 'rr-compact' : ''}} {{autoHeight ? 'rr-auto' : ''}} fs-{{fontLevel}} sp-{{spacingLevel}}" style="--c: {{vm.themeColor}};" wx:if="{{vm}}">
+  <view class="rr-flow">
+
+    <!-- ============ 侧边栏布局（side-dark / side-light / side-right / side-gradient） ============ -->
+    <block wx:if="{{vm.layoutSidebar}}">
+      <view class="biz-wrap {{vm.sideOnRight ? 'biz-wrap-right' : ''}}">
+        <view class="biz-side {{vm.variant === 'side-light' ? 'biz-side-light' : ''}} {{vm.variant === 'side-gradient' ? 'biz-side-gradient' : ''}}">
+          <image wx:if="{{vm.avatarPos === 'side' && vm.avatarUrl}}" class="biz-ava" src="{{vm.avatarUrl}}" mode="aspectFill"></image>
+          <view wx:elif="{{vm.avatarPos === 'side'}}" class="biz-ava biz-ava-ph"><text class="ava-ph-txt">照片</text></view>
+          <view class="biz-name">{{vm.name}}</view>
+          <view class="biz-intent" wx:if="{{vm.jobIntent}}">意向岗位：{{vm.jobIntent}}</view>
+
+          <view class="biz-blk" wx:if="{{vm.sideContact.length}}">
+            <view class="biz-cap">联系方式</view>
+            <view class="biz-line" wx:for="{{vm.sideContact}}" wx:key="index">{{item}}</view>
+          </view>
+
+          <view class="biz-blk" wx:for="{{vm.sideSections}}" wx:key="key">
+            <view class="biz-cap">{{item.title}}</view>
+            <block wx:if="{{item.kind === 'skill'}}">
+              <view class="biz-skill" wx:for="{{item.items}}" wx:for-item="s" wx:key="id">
+                <view class="biz-skill-cat" wx:if="{{s.category}}">{{s.category}}</view>
+                <view class="biz-line">{{s.itemsText}}</view>
+              </view>
+            </block>
+            <block wx:else>
+              <view class="biz-line" wx:for="{{item.items}}" wx:for-item="c" wx:key="id">
+                {{c.name}}<text class="biz-dim" wx:if="{{c.date || c.level}}"> · {{c.date || c.level}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+
+        <view class="biz-main">
+          <view class="sec" wx:for="{{vm.mainSections}}" wx:key="key">
+            <view class="sec-title biz-sec-title">{{item.title}}</view>
+            <template is="secBody" data="{{s: item, useTags: vm.useTags}}"></template>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- ============ 单栏布局 ============ -->
+    <block wx:else>
+      <!-- 头部：信息表格（A5） -->
+      <view class="hd hd-table" wx:if="{{vm.infoTable}}">
+        <view class="tbl-name-row">
+          <text class="hd-name">{{vm.name}}</text>
+          <text class="tbl-intent" wx:if="{{vm.jobIntent}}">意向岗位：{{vm.jobIntent}}</text>
+        </view>
+        <view class="info-tbl" wx:if="{{vm.infoRows.length}}">
+          <view class="info-row" wx:for="{{vm.infoRows}}" wx:for-item="row" wx:key="index">
+            <view class="info-cell">
+              <text class="info-label">{{row.c1.label}}</text>
+              <text class="info-val">{{row.c1.value}}</text>
+            </view>
+            <view class="info-cell {{row.c2 ? '' : 'info-cell-empty'}}">
+              <text class="info-label" wx:if="{{row.c2}}">{{row.c2.label}}</text>
+              <text class="info-val" wx:if="{{row.c2}}">{{row.c2.value}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 头部：居中（A1 无照片 / A3 照片右上） -->
+      <view class="hd hd-center {{vm.avatarPos === 'right' ? 'hd-ava' : ''}}" wx:elif="{{!vm.headerLeft}}">
+        <image wx:if="{{vm.avatarPos === 'right' && vm.avatarUrl}}" class="hd-ava-img" src="{{vm.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:elif="{{vm.avatarPos === 'right'}}" class="hd-ava-img hd-ava-ph"><text class="ava-ph-txt">照片</text></view>
+        <view class="hd-name">{{vm.name}}</view>
+        <view class="hd-intent" wx:if="{{vm.jobIntent}}">意向岗位：{{vm.jobIntent}}</view>
+        <view class="hd-line" wx:if="{{vm.headerContact}}">{{vm.headerContact}}</view>
+        <view class="hd-line" wx:if="{{vm.headerLinks}}">{{vm.headerLinks}}</view>
+      </view>
+
+      <!-- 头部：左对齐（信息左 + 头像右） -->
+      <view class="hd hd-left" wx:else>
+        <view class="hd-info">
+          <view class="hd-name">{{vm.name}}</view>
+          <view class="hd-intent" wx:if="{{vm.jobIntent}}">意向岗位：{{vm.jobIntent}}</view>
+          <view class="hd-line" wx:if="{{vm.headerContact}}">{{vm.headerContact}}</view>
+          <view class="hd-line" wx:if="{{vm.headerLinks}}">{{vm.headerLinks}}</view>
+        </view>
+        <image wx:if="{{vm.avatarPos === 'right' && vm.avatarUrl}}" class="hd-ava-img" src="{{vm.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:elif="{{vm.avatarPos === 'right'}}" class="hd-ava-img hd-ava-ph"><text class="ava-ph-txt">照片</text></view>
+      </view>
+
+      <!-- 板块（按 sectionOrder 排序，空板块隐藏） -->
+      <view class="sec" wx:for="{{vm.sections}}" wx:key="key">
+        <view class="sec-title">
+          <block wx:if="{{vm.bilingualTitle}}">
+            <text class="tv-en">{{item.en}}</text><text class="tv-cn">{{item.title}}</text>
+          </block>
+          <block wx:else>{{item.title}}</block>
+        </view>
+        <template is="secBody" data="{{s: item, useTags: vm.useTags}}"></template>
+      </view>
+    </block>
+
+  </view>
+</view>

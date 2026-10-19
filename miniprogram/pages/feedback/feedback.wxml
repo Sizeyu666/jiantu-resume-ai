@@ -1,0 +1,35 @@
+<!-- pages/feedback/feedback.wxml 问题反馈 -->
+<view class="page">
+  <view class="card">
+    <view class="label">
+      问题描述<text class="required">*</text>
+    </view>
+    <textarea
+      class="content-input"
+      value="{{content}}"
+      bindinput="onContentInput"
+      placeholder="请描述你遇到的问题或建议，例如：某个模板显示异常、希望增加某类模板等"
+      maxlength="1000"
+      placeholder-class="ph"
+    />
+    <view class="len">{{leftLen}}</view>
+  </view>
+
+  <view class="card">
+    <view class="label">联系方式（选填）</view>
+    <input
+      class="contact-input"
+      value="{{contact}}"
+      bindinput="onContactInput"
+      placeholder="微信号 / 手机号 / 邮箱，方便我们与你联系"
+      maxlength="100"
+      placeholder-class="ph"
+    />
+  </view>
+
+  <view class="tip">反馈内容仅用于改进产品，我们会尽快处理并保护你的隐私</view>
+
+  <button class="btn btn-primary submit-btn" bindtap="onSubmit" disabled="{{submitting}}">
+    {{submitting ? '提交中...' : '提交反馈'}}
+  </button>
+</view>

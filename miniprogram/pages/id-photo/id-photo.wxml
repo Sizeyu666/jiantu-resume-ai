@@ -1,0 +1,69 @@
+<!-- pages/id-photo/id-photo.wxml AI 证件照 -->
+<view class="page">
+  <view class="tip-card">
+    <view class="tip-head">
+      <text class="tip-title">使用提示</text>
+      <text class="tip-remain">{{remainText}}</text>
+    </view>
+    <view class="tip-line">1. 建议使用纯色背景的正面照片，AI 抠图换底效果最好</view>
+    <view class="tip-line">2. 照片将上传云端进行人像分割处理，仅用于生成证件照</view>
+    <view class="tip-line">3. 同一张照片切换底色 / 尺寸不重复扣次</view>
+  </view>
+
+  <!-- 预览区 -->
+  <view class="stage">
+    <view class="uploader" wx:if="{{!srcPath}}" bindtap="onChooseImage">
+      <text class="uploader-icon">📷</text>
+      <text class="uploader-text">上传 / 拍摄一张正面照</text>
+    </view>
+    <view class="photo-frame" wx:elif="{{resultUrl}}">
+      <image class="photo-img" src="{{resultUrl}}" mode="aspectFit"></image>
+    </view>
+    <view class="photo-frame stage-empty" wx:else>
+      <text class="stage-loading">{{processing ? 'AI 抠图中...' : (compositing ? '合成中...' : '')}}</text>
+    </view>
+  </view>
+  <view class="rechoose" wx:if="{{srcPath}}" bindtap="onChooseImage">重新选择照片</view>
+
+  <!-- 底色选择 -->
+  <view class="opt-card">
+    <view class="opt-title">选择底色</view>
+    <view class="opt-row">
+      <view
+        class="bg-opt {{bgKey === item.key ? 'bg-opt-active' : ''}}"
+        wx:for="{{colors}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onPickBg"
+      >
+        <view class="bg-dot" style="background: {{item.value}};"></view>
+        <text class="bg-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 尺寸选择 -->
+  <view class="opt-card">
+    <view class="opt-title">选择尺寸</view>
+    <view class="opt-row">
+      <view
+        class="size-opt {{sizeKey === item.key ? 'size-opt-active' : ''}}"
+        wx:for="{{sizes}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onPickSize"
+      >
+        <text class="size-name">{{item.name}}</text>
+        <text class="size-px">{{item.w}}×{{item.h}}</text>
+      </view>
+    </view>
+  </view>
+
+  <button class="btn btn-primary save-btn" bindtap="onSave" disabled="{{!resultUrl || saving}}">
+    {{saving ? '保存中...' : '保存到相册'}}
+  </button>
+  <button wx:if="{{resultUrl}}" class="btn avatar-btn" bindtap="onSetAvatar">设为简历头像</button>
+
+  <!-- 离屏水印画布（移出屏幕，不可见） -->
+  <canvas type="2d" id="photoCanvas" class="hidden-canvas"></canvas>
+</view>

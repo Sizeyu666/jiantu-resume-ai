@@ -1,0 +1,136 @@
+<!-- pages/jd-match/jd-match.wxml -->
+<!-- 免费用户各可体验 1 次，用完引导开通会员 -->
+<view class="page">
+  <!-- 简历选择 -->
+  <view class="resume-pick" bindtap="onPickResume">
+    <view class="rp-left">
+      <text class="rp-label">分析简历</text>
+      <text class="rp-title ellipsis">{{selectedTitle || '请选择简历'}}</text>
+    </view>
+    <text class="rp-caret">更换 ▾</text>
+  </view>
+  <view class="empty-hint" wx:if="{{!resumeList.length}}">
+    还没有可分析的简历，<text class="empty-link" bindtap="goCreate">先去创建一份</text>
+  </view>
+
+  <!-- 分段切换 -->
+  <view class="seg">
+    <view class="seg-item {{tab === 'jd' ? 'seg-active' : ''}}" data-tab="jd" bindtap="onSwitchTab">JD 匹配</view>
+    <view class="seg-item {{tab === 'check' ? 'seg-active' : ''}}" data-tab="check" bindtap="onSwitchTab">简历体检</view>
+  </view>
+
+  <!-- ================= JD 匹配 ================= -->
+  <block wx:if="{{tab === 'jd'}}">
+    <view class="card">
+      <view class="card-title">粘贴 JD（职位描述）</view>
+      <textarea
+        class="jd-input"
+        value="{{jdText}}"
+        bindinput="onJdInput"
+        placeholder="把目标职位的完整描述粘贴到这里，AI 将对照简历逐项分析..."
+        maxlength="3000"
+      />
+      <button class="btn btn-primary" bindtap="onRunMatch" disabled="{{loading || !resumeList.length}}">
+        {{loading ? '分析中...' : '开始匹配分析'}}
+      </button>
+      <view class="trial-hint">
+        <text wx:if="{{isVip}}">会员不限次使用</text>
+        <text wx:elif="{{jdRemain > 0}}">免费体验剩余 {{jdRemain}} 次，开通会员不限次 · <text class="trial-link" bindtap="goVip">1 元开通</text></text>
+        <text wx:else>免费体验已用完 · <text class="trial-link" bindtap="goVip">1 元开通会员</text></text>
+      </view>
+    </view>
+
+    <!-- 结果 -->
+    <block wx:if="{{match}}">
+      <!-- 分数圆环 -->
+      <view class="card score-card">
+        <view class="score-ring-wrap">
+          <canvas type="2d" id="scoreRing" class="score-ring"></canvas>
+          <view class="score-ring-center">
+            <view class="score-num" style="color: {{scoreColor}};">{{match.matchScore}}</view>
+            <view class="score-unit-text">匹配分</view>
+          </view>
+        </view>
+        <view class="score-info">
+          <view class="score-summary">{{match.summary}}</view>
+        </view>
+      </view>
+
+      <!-- 必备技能对照 -->
+      <view class="card" wx:if="{{match.requiredSkills.length}}">
+        <view class="card-title">必备技能对照</view>
+        <view class="skill-row" wx:for="{{match.requiredSkills}}" wx:key="skill">
+          <view class="skill-top">
+            <text class="skill-mark">{{item.inResume ? '✅' : '❌'}}</text>
+            <text class="skill-name">{{item.skill}}</text>
+            <view class="skill-conf">
+              <text class="conf-dot {{dot ? 'conf-on' : ''}}" wx:for="{{item.dots}}" wx:for-item="dot" wx:for-index="di" wx:key="di"></text>
+            </view>
+          </view>
+          <view class="skill-sug" wx:if="{{!item.inResume && item.suggestion}}">建议：{{item.suggestion}}</view>
+        </view>
+      </view>
+
+      <!-- 加分技能 -->
+      <view class="card" wx:if="{{match.bonusSkills.length}}">
+        <view class="card-title">加分技能</view>
+        <view class="skill-row" wx:for="{{match.bonusSkills}}" wx:key="skill">
+          <view class="skill-top">
+            <text class="skill-mark">{{item.inResume ? '✅' : '⭕'}}</text>
+            <text class="skill-name">{{item.skill}}</text>
+          </view>
+          <view class="skill-sug" wx:if="{{item.suggestion}}">{{item.suggestion}}</view>
+        </view>
+      </view>
+
+      <!-- 缺失关键词 -->
+      <view class="card" wx:if="{{match.missingKeywords.length}}">
+        <view class="card-title">缺失关键词</view>
+        <view class="kw-wrap">
+          <text class="kw-chip" wx:for="{{match.missingKeywords}}" wx:key="*this">{{item}}</text>
+        </view>
+        <view class="kw-tip">如确有相关经历，可在简历中自然体现这些词，不要堆砌</view>
+      </view>
+
+      <!-- ATS 检查 -->
+      <view class="card">
+        <view class="card-title">ATS 友好性</view>
+        <view class="ats-line {{match.atsFriendly ? 'ats-ok' : 'ats-bad'}}">
+          {{match.atsFriendly ? '✅ 排版对机器筛选友好' : '⚠️ 存在影响机器解析的问题'}}
+        </view>
+        <view class="ats-warn" wx:for="{{match.atsWarnings}}" wx:key="*this">· {{item}}</view>
+      </view>
+
+      <view class="ai-disclaimer">{{disclaimer}}</view>
+    </block>
+  </block>
+
+  <!-- ================= 简历体检 ================= -->
+  <block wx:if="{{tab === 'check'}}">
+    <view class="card check-intro">
+      <view class="card-title">5 项专业体检</view>
+      <view class="check-desc">量化成果 · 一页篇幅 · 文字规范 · 动词力度 · 技能相关度</view>
+      <button class="btn btn-primary" bindtap="onRunCheck" disabled="{{loading || !resumeList.length}}">
+        {{loading ? '体检中...' : '开始简历体检'}}
+      </button>
+      <view class="trial-hint">
+        <text wx:if="{{isVip}}">会员不限次使用</text>
+        <text wx:elif="{{checkRemain > 0}}">免费体验剩余 {{checkRemain}} 次，开通会员不限次 · <text class="trial-link" bindtap="goVip">1 元开通</text></text>
+        <text wx:else>免费体验已用完 · <text class="trial-link" bindtap="goVip">1 元开通会员</text></text>
+      </view>
+    </view>
+
+    <view class="check-item" wx:for="{{checkItems}}" wx:key="id">
+      <view class="ci-head">
+        <text class="ci-badge ci-{{item.level}}">{{item.levelText}}</text>
+        <text class="ci-name">{{item.name}}</text>
+      </view>
+      <view class="ci-detail">{{item.detail}}</view>
+      <view class="ci-sug" wx:for="{{item.suggestions}}" wx:for-item="s" wx:for-index="si" wx:key="si">
+        <text class="ci-sug-arrow">→</text> {{s}}
+      </view>
+    </view>
+
+    <view class="ai-disclaimer" wx:if="{{checkItems.length}}">{{disclaimer}}</view>
+  </block>
+</view>

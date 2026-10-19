@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "简历预览",
+  "usingComponents": {
+    "resume-render": "/components/resume-render/resume-render"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "parseResume",
+  "version": "2.0.0",
+  "description": "导入简历：PDF(pdf-parse)/图片(腾讯云OCR v20181119)文本提取 + DeepSeek 结构化解析",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest",
+    "axios": "^1.7.7",
+    "pdf-parse": "1.1.1",
+    "tencentcloud-sdk-nodejs": "^4.0.1000"
+  }
+}

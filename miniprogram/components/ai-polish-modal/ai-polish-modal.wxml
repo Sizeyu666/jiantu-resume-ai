@@ -1,0 +1,56 @@
+<!-- components/ai-polish-modal/ai-polish-modal.wxml AI 润色底部弹窗 -->
+<view class="pm-mask" wx:if="{{visible}}" bindtap="onClose" catchtouchmove="noop">
+  <view class="pm-panel" catchtap="noop">
+    <!-- 头部 -->
+    <view class="pm-head">
+      <text class="pm-title">{{actionType === 'summary' ? 'AI 生成自我评价' : 'AI 润色'}}</text>
+      <text class="pm-close" bindtap="onClose">✕</text>
+    </view>
+    <view class="pm-trust">AI 基于 HR 视角和 STAR 法则优化，已为 10 万+应届生优化简历</view>
+
+    <!-- 内容区 -->
+    <scroll-view scroll-y class="pm-body">
+      <!-- 原文（polish 时展示，只读） -->
+      <block wx:if="{{originalText}}">
+        <view class="pm-label">原文</view>
+        <view class="pm-original">{{originalText}}</view>
+      </block>
+
+      <view class="pm-label">AI 改写后（可手动微调）</view>
+
+      <!-- loading -->
+      <view class="pm-loading" wx:if="{{loading}}">
+        <text class="pm-spinner"></text>
+        <text>AI 生成中...</text>
+      </view>
+
+      <!-- 错误（含无额度 / 会员专属） -->
+      <view class="pm-error" wx:elif="{{errorMsg}}">
+        <view class="pm-error-text">{{errorMsg}}</view>
+        <view class="pm-retry" wx:if="{{errorMsg === '生成失败，请重试'}}" bindtap="onRegenerate">重新生成</view>
+        <view class="pm-retry" wx:else bindtap="onVipHint">了解会员</view>
+      </view>
+
+      <!-- 结果（可编辑微调） -->
+      <textarea
+        wx:else
+        class="pm-result"
+        value="{{resultText}}"
+        bindinput="onResultInput"
+        maxlength="-1"
+        auto-height
+        cursor-spacing="20"
+      />
+
+      <view class="pm-quota" wx:if="{{remaining < 900}}">今日剩余免费次数：{{remaining}}</view>
+      <view class="ai-disclaimer">{{disclaimer}}</view>
+    </scroll-view>
+
+    <!-- 底部按钮 -->
+    <view class="pm-foot">
+      <button class="pm-btn pm-btn-ghost {{loading ? 'pm-btn-disabled' : ''}}" bindtap="onRegenerate" disabled="{{loading}}">重新生成</button>
+      <button class="pm-btn pm-btn-ghost {{(loading || !resultText) ? 'pm-btn-disabled' : ''}}" bindtap="onCopy" disabled="{{loading || !resultText}}">复制</button>
+      <button class="pm-btn pm-btn-main {{(loading || !resultText) ? 'pm-btn-disabled' : ''}}" bindtap="onAdopt" disabled="{{loading || !resultText}}">采纳</button>
+    </view>
+  </view>
+</view>

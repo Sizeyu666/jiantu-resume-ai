@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "模板广场",
+  "usingComponents": {
+    "resume-render": "/components/resume-render/resume-render"
+  }
+}

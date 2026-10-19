@@ -1,0 +1,123 @@
+/* pages/vip/vip.wxss */
+.page { padding: 0 0 60rpx; }
+
+/* ---------- 头部 ---------- */
+.hero {
+  background: linear-gradient(135deg, #1e3a5f, #2b4f7e);
+  padding: 56rpx 32rpx 64rpx;
+  text-align: center;
+  color: #ffffff;
+}
+.hero-crown { font-size: 72rpx; }
+.hero-title { font-size: 44rpx; font-weight: 700; margin-top: 12rpx; letter-spacing: 4rpx; }
+.hero-sub { font-size: 25rpx; opacity: 0.85; margin-top: 12rpx; }
+
+/* ---------- 权益 ---------- */
+.benefits {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  margin: -32rpx 24rpx 0;
+  padding: 12rpx 28rpx;
+  position: relative;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+.benefit {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #f0f1f3;
+}
+.benefit:last-child { border-bottom: none; }
+.benefit-icon { font-size: 40rpx; margin-right: 24rpx; width: 56rpx; text-align: center; }
+.benefit-meta { flex: 1; }
+.benefit-title { font-size: 29rpx; font-weight: 600; }
+.benefit-desc { font-size: 23rpx; color: var(--text-placeholder); margin-top: 6rpx; }
+.benefit-check { color: #10b981; font-size: 32rpx; }
+.tpl-free-note {
+  margin: 20rpx 24rpx 0;
+  font-size: 22rpx;
+  color: var(--text-sub);
+  background: var(--gold-50, #fdf6e3);
+  border-radius: 12rpx;
+  padding: 16rpx 24rpx;
+  line-height: 1.5;
+}
+
+/* ---------- 套餐（2×2 网格） ---------- */
+.plans {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 32rpx 24rpx 0;
+}
+.plan {
+  width: calc(50% - 12rpx);
+  position: relative;
+  background: var(--card-bg);
+  border: 3rpx solid var(--border);
+  border-radius: var(--radius);
+  padding: 32rpx 0 24rpx;
+  margin: 0 24rpx 24rpx 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+.plan:nth-child(2n) { margin-right: 0; }
+.plan-active { border-color: var(--primary); background: rgba(30, 58, 95, 0.05); }
+.plan-flag {
+  position: absolute;
+  top: -2rpx;
+  right: -2rpx;
+  font-size: 20rpx;
+  color: #ffffff;
+  background: var(--primary);
+  border-radius: 0 var(--radius) 0 12rpx;
+  padding: 4rpx 16rpx;
+}
+.plan-tag {
+  display: inline-block;
+  font-size: 19rpx;
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  border-radius: 6rpx;
+  padding: 2rpx 12rpx;
+  margin-bottom: 8rpx;
+}
+.plan-name { font-size: 27rpx; font-weight: 600; }
+.plan-price { font-size: 46rpx; font-weight: 700; color: var(--primary); margin-top: 10rpx; }
+.plan-sym { font-size: 26rpx; margin-right: 2rpx; }
+.plan-desc { font-size: 21rpx; color: var(--text-placeholder); margin-top: 8rpx; padding: 0 12rpx; }
+
+.opened {
+  margin: 32rpx 24rpx 0;
+  background: #fdf3d3;
+  color: #8a6400;
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 27rpx;
+  padding: 32rpx 0;
+}
+
+/* ---------- 开通 ---------- */
+.subscribe-btn {
+  margin: 40rpx 24rpx 0;
+  background: linear-gradient(135deg, #b8860b, #d4a528);
+  color: #ffffff;
+}
+.subscribe-btn-on { background: #c7ccd4; }
+.pay-note {
+  text-align: center;
+  font-size: 21rpx;
+  color: var(--text-placeholder);
+  margin-top: 20rpx;
+  padding: 0 48rpx;
+  line-height: 1.6;
+}
+
+/* ---------- 演示开关 ---------- */
+.mock-entry {
+  text-align: center;
+  font-size: 23rpx;
+  color: var(--text-placeholder);
+  text-decoration: underline;
+  margin-top: 40rpx;
+  padding: 12rpx 0;
+}

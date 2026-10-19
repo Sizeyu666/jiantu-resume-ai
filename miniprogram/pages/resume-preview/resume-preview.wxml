@@ -1,0 +1,155 @@
+<!-- pages/resume-preview/resume-preview.wxml V2 全屏 A4 预览 + 底部导出工具栏 -->
+<view class="page" wx:if="{{resume}}">
+  <!-- A4 纸张 -->
+  <scroll-view scroll-y class="paper-scroll" enhanced show-scrollbar="{{false}}" bindscroll="onPaperScroll">
+    <view class="paper-clip" style="{{paperHeight ? 'height:' + paperHeight + 'px;' : ''}}">
+      <view class="paper-scale">
+        <resume-render
+          resume="{{resume}}"
+          auto-height="{{true}}"
+          font-level="{{resume.fontSize || 'medium'}}"
+          spacing-level="{{resume.spacing || 'normal'}}"
+          bindlayoutchange="onLayout"
+        />
+      </view>
+    </view>
+    <view class="page-indicator" wx:if="{{totalPages > 0}}">第{{curPage}}页 / 共{{totalPages}}页</view>
+    <view class="paper-hint" wx:if="{{totalPages > 1}}">内容超过 1 页，建议回编辑器适当精简，或导出 PDF / 长图</view>
+    <view class="paper-hint" wx:else>所有修改自动保存</view>
+  </scroll-view>
+
+  <!-- 遮罩 -->
+  <view class="mask" wx:if="{{tplPanelOpen || sheet}}" bindtap="closePanel"></view>
+
+  <!-- 模板选择面板（分组网格） -->
+  <view class="tpl-panel {{tplPanelOpen ? 'tpl-panel-show' : ''}}" catchtap="noop">
+    <view class="sheet-head">
+      <text class="sheet-title">选择模板（共 {{templateCount}} 套，全部免费）</text>
+      <text class="sheet-close" bindtap="closePanel">完成</text>
+    </view>
+    <scroll-view scroll-y class="tpl-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="tpl-group" wx:for="{{templateGroups}}" wx:for-item="g" wx:key="key">
+        <view class="tpl-group-name">{{g.name}}</view>
+        <view class="tpl-grid">
+          <view
+            class="tpl-card {{resume.templateId === t.id ? 'tpl-card-active' : ''}}"
+            wx:for="{{g.list}}"
+            wx:for-item="t"
+            wx:key="id"
+            data-id="{{t.id}}"
+            bindtap="onSelectTemplate"
+          >
+            <view class="tpl-mini m-{{t.variant}}" style="--c: {{t.defaultColor}};">
+              <view class="sk sk-title"></view>
+              <view class="sk sk-l1"></view>
+              <view class="sk sk-l2"></view>
+              <view class="sk sk-l3"></view>
+            </view>
+            <view class="tpl-card-name">{{t.name}}</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 主题色选择弹层 -->
+  <view class="opt-panel {{sheet === 'color' ? 'tpl-panel-show' : ''}}" catchtap="noop" wx:if="{{sheet === 'color'}}">
+    <view class="sheet-head">
+      <text class="sheet-title">主题色</text>
+      <text class="sheet-close" bindtap="closeSheet">完成</text>
+    </view>
+    <view class="color-grid">
+      <view
+        class="color-card {{resume.themeColor === item.value ? 'color-card-active' : ''}}"
+        wx:for="{{colors}}"
+        wx:key="value"
+        data-value="{{item.value}}"
+        bindtap="onSelectColor"
+      >
+        <view class="color-card-dot" style="background: {{item.value}};"></view>
+        <text class="color-card-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 字体大小选择弹层 -->
+  <view class="opt-panel {{sheet === 'font' ? 'tpl-panel-show' : ''}}" catchtap="noop" wx:if="{{sheet === 'font'}}">
+    <view class="sheet-head">
+      <text class="sheet-title">字体大小</text>
+      <text class="sheet-close" bindtap="closeSheet">完成</text>
+    </view>
+    <view class="opt-list">
+      <view
+        class="opt-item {{(resume.fontSize || 'medium') === item.key ? 'opt-item-active' : ''}}"
+        wx:for="{{fontOptions}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onSelectFont"
+      >
+        <view class="opt-item-left">
+          <text class="opt-item-name font-demo-{{item.key}}">{{item.name}}</text>
+          <text class="opt-item-desc">{{item.desc}}</text>
+        </view>
+        <text class="opt-item-check">{{(resume.fontSize || 'medium') === item.key ? '✓' : ''}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模块间距选择弹层 -->
+  <view class="opt-panel {{sheet === 'spacing' ? 'tpl-panel-show' : ''}}" catchtap="noop" wx:if="{{sheet === 'spacing'}}">
+    <view class="sheet-head">
+      <text class="sheet-title">模块间距</text>
+      <text class="sheet-close" bindtap="closeSheet">完成</text>
+    </view>
+    <view class="opt-list">
+      <view
+        class="opt-item {{(resume.spacing || 'normal') === item.key ? 'opt-item-active' : ''}}"
+        wx:for="{{spacingOptions}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onSelectSpacing"
+      >
+        <view class="opt-item-left">
+          <text class="opt-item-name">{{item.name}}</text>
+          <text class="opt-item-desc">{{item.desc}}</text>
+        </view>
+        <text class="opt-item-check">{{(resume.spacing || 'normal') === item.key ? '✓' : ''}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部工具栏（横向滚动） -->
+  <view class="toolbar safe-bottom">
+    <scroll-view scroll-x class="toolbar-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="toolbar-inner">
+        <view class="tool" bindtap="onRenameFile">
+          <text class="tool-icon">✎</text>
+          <text class="tool-label">命名</text>
+        </view>
+        <view class="tool" bindtap="openSheet" data-sheet="color">
+          <text class="tool-icon">●</text>
+          <text class="tool-label">主题色</text>
+        </view>
+        <view class="tool" bindtap="openSheet" data-sheet="font">
+          <text class="tool-icon">A</text>
+          <text class="tool-label">字号</text>
+        </view>
+        <view class="tool" bindtap="openSheet" data-sheet="spacing">
+          <text class="tool-icon">↕</text>
+          <text class="tool-label">间距</text>
+        </view>
+        <view class="tool" bindtap="toggleTplPanel">
+          <text class="tool-icon">▦</text>
+          <text class="tool-label">模板</text>
+        </view>
+        <button class="tool-btn tool-btn-primary" bindtap="onExport" disabled="{{exporting}}">
+          {{exporting ? '生成中' : '保存为图片'}}
+        </button>
+        <button class="tool-btn tool-btn-plain" bindtap="onExportPdf" disabled="{{exporting}}">导出 PDF</button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 离屏导出画布 -->
+  <canvas type="2d" id="exportCanvas" class="export-canvas"></canvas>
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "resumeCRUD",
+  "version": "1.0.0",
+  "description": "简历增删改查（含免费数量上限与归属校验）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

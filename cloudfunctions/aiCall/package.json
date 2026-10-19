@@ -1,0 +1,7 @@
+{
+  "name": "aiCall",
+  "version": "1.0.0",
+  "description": "AI 统一中转（polish/summary/jdMatch/check，DeepSeek）",
+  "main": "index.js",
+  "dependencies": {}
+}

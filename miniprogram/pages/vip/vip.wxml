@@ -1,0 +1,53 @@
+<!-- pages/vip/vip.wxml 会员中心 V2 -->
+<view class="page">
+  <view class="hero">
+    <view class="hero-crown">👑</view>
+    <view class="hero-title">简途会员</view>
+    <view class="hero-sub">新用户 1 元体验，解锁全部能力</view>
+  </view>
+
+  <!-- 权益 -->
+  <view class="benefits">
+    <view class="benefit" wx:for="{{benefits}}" wx:key="title">
+      <text class="benefit-icon">{{item.icon}}</text>
+      <view class="benefit-meta">
+        <view class="benefit-title">{{item.title}}</view>
+        <view class="benefit-desc">{{item.desc}}</view>
+      </view>
+      <text class="benefit-check">✓</text>
+    </view>
+  </view>
+  <view class="tpl-free-note">🎨 30 套专业简历模板已全部免费，会员专注 AI 能力与无水印体验</view>
+
+  <!-- 套餐 -->
+  <view class="plans" wx:if="{{!isVip}}">
+    <view
+      class="plan {{selectedPlan === item.key ? 'plan-active' : ''}}"
+      wx:for="{{plans}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onSelectPlan"
+    >
+      <view class="plan-flag" wx:if="{{item.recommend}}">超值</view>
+      <view class="plan-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+      <view class="plan-name">{{item.name}}</view>
+      <view class="plan-price"><text class="plan-sym">¥</text>{{item.price}}</view>
+      <view class="plan-desc">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <view class="opened" wx:else>
+    <text>👑 你已开通会员，全部功能已解锁</text>
+  </view>
+
+  <!-- 开通按钮 -->
+  <button class="btn subscribe-btn {{isVip ? 'subscribe-btn-on' : ''}}" bindtap="onSubscribe" disabled="{{isVip}}">
+    {{isVip ? '会员生效中' : '立即开通会员'}}
+  </button>
+  <view class="pay-note">会员为虚拟增值服务，开通后不支持退款；支付通道上线前价格仅为展示</view>
+
+  <!-- 支付接入前的演示开关（上线前移除） -->
+  <view class="mock-entry" bindtap="onMockActivate">
+    {{isVip ? '关闭演示会员状态' : '演示开通会员（仅用于体验会员功能，上线前移除）'}}
+  </view>
+</view>

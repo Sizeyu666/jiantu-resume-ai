@@ -1,0 +1,19 @@
+/* pages/privacy/privacy.wxss */
+.page { padding: 24rpx 24rpx 60rpx; }
+
+.doc { padding: 36rpx 32rpx; }
+.doc-title { font-size: 36rpx; font-weight: 700; text-align: center; }
+.doc-updated { font-size: 22rpx; color: var(--text-placeholder); text-align: center; margin-top: 12rpx; }
+
+.sec { margin-top: 32rpx; }
+.sec-h { font-size: 29rpx; font-weight: 700; margin-bottom: 14rpx; }
+.sec-p { font-size: 26rpx; color: #374151; line-height: 1.8; margin-bottom: 12rpx; text-align: justify; }
+.sec-li { font-size: 26rpx; color: #374151; line-height: 1.9; padding-left: 12rpx; }
+
+.delete-btn { margin-top: 32rpx; }
+.bottom-note {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--text-placeholder);
+  margin-top: 16rpx;
+}

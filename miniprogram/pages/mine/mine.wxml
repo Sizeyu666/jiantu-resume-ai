@@ -1,0 +1,125 @@
+<!-- pages/mine/mine.wxml 我的 -->
+<view class="page">
+  <!-- 用户区 -->
+  <view class="user">
+    <view class="avatar">简</view>
+    <view class="user-meta">
+      <view class="user-name">简途简历用户</view>
+      <view class="user-tag {{isVip ? 'user-tag-vip' : ''}}">{{isVip ? '尊享会员' : '免费版'}}</view>
+    </view>
+  </view>
+
+  <!-- 会员卡片 -->
+  <view class="vip-card {{isVip ? 'vip-card-on' : ''}}" bindtap="goVip">
+    <block wx:if="{{!isVip}}">
+      <view class="vc-left">
+        <view class="vc-title">开通会员</view>
+        <view class="vc-desc">AI 不限次 · 无水印导出 · 证件照高清</view>
+      </view>
+      <view class="vc-btn">立即开通</view>
+    </block>
+    <block wx:else>
+      <view class="vc-left">
+        <view class="vc-title">👑 尊享会员</view>
+        <view class="vc-desc">全部功能已解锁，感谢支持</view>
+      </view>
+      <view class="vc-btn vc-btn-plain">会员中心</view>
+    </block>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stat">
+    <view class="stat-item">
+      <view class="stat-num">{{resumeCount}}</view>
+      <view class="stat-label">我的简历</view>
+    </view>
+    <view class="stat-div"></view>
+    <view class="stat-item">
+      <view class="stat-num">{{isVip ? '∞' : aiRemaining}}</view>
+      <view class="stat-label">今日 AI 次数</view>
+    </view>
+  </view>
+
+  <!-- AI 工具箱 -->
+  <view class="group">
+    <view class="group-title">AI 工具箱</view>
+    <view class="menu card">
+      <view class="menu-row" bindtap="goJdMatch">
+        <text class="menu-icon">🎯</text>
+        <view class="menu-main">
+          <view class="menu-name">JD 匹配与简历体检</view>
+          <view class="menu-sub">匹配分 · 技能缺口 · 5 项专业体检</view>
+        </view>
+        <text class="menu-tag" wx:if="{{!isVip}}">免费1次</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-row" bindtap="goIdPhoto">
+        <text class="menu-icon">📷</text>
+        <view class="menu-main">
+          <view class="menu-name">AI 证件照</view>
+          <view class="menu-sub">蓝 / 白 / 红底一键换，保存到相册</view>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-row" bindtap="goVip">
+        <text class="menu-icon">👑</text>
+        <view class="menu-main">
+          <view class="menu-name">会员中心</view>
+          <view class="menu-sub">权益说明与套餐</view>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近编辑（历史记录） -->
+  <view class="group">
+    <view class="group-title">最近编辑</view>
+    <view class="card recent" wx:if="{{recent.length}}">
+      <view class="menu-row" wx:for="{{recent}}" wx:key="_id" data-id="{{item._id}}" bindtap="goEdit">
+        <text class="menu-icon">📄</text>
+        <view class="menu-main">
+          <view class="menu-name ellipsis">{{item.title}}</view>
+        </view>
+        <text class="menu-time">{{item.updatedText}}</text>
+      </view>
+    </view>
+    <view class="empty-line" wx:else>还没有简历，去首页创建第一份吧</view>
+  </view>
+
+  <!-- 隐私与数据 -->
+  <view class="group">
+    <view class="group-title">隐私与数据</view>
+    <view class="card menu">
+      <view class="menu-row" bindtap="goFeedback">
+        <text class="menu-icon">💬</text>
+        <view class="menu-main">
+          <view class="menu-name">问题反馈</view>
+          <view class="menu-sub">告诉我们你遇到的问题或建议</view>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-row" bindtap="goPrivacy">
+        <text class="menu-icon">🔒</text>
+        <view class="menu-main">
+          <view class="menu-name">隐私协议</view>
+          <view class="menu-sub">数据存储位置与使用说明</view>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-row menu-row-danger" bindtap="onDeleteAll">
+        <text class="menu-icon">🗑️</text>
+        <view class="menu-main">
+          <view class="menu-name">一键删除我的全部数据</view>
+          <view class="menu-sub">删除云端所有简历，不可恢复</view>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 广告位预留（不强制观看，不影响任何基础功能） -->
+  <view class="ad-slot">广告位</view>
+
+  <view class="version">简途简历 · 数据仅存于微信云开发</view>
+</view>

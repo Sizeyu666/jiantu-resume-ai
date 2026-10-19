@@ -1,0 +1,10 @@
+{
+  "name": "exportPdf",
+  "version": "1.1.0",
+  "description": "简历 HTML→PDF 导出（puppeteer/puppeteer-core + Chromium 层；未配置时返回 PDF_GENERATE_UNAVAILABLE 由前端降级长图）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "puppeteer-core": "^21.11.0"
+  }
+}

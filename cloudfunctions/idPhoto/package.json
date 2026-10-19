@@ -1,0 +1,10 @@
+{
+  "name": "idPhoto",
+  "version": "2.0.0",
+  "description": "AI 证件照：腾讯云人体分析 bda SegmentPortraitPic 抠透明前景（换底色/裁剪在前端 canvas 完成）",
+  "main": "index.js",
+  "dependencies": {
+    "tencentcloud-sdk-nodejs": "^4.0.1000",
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "编辑简历",
+  "usingComponents": {
+    "resume-render": "/components/resume-render/resume-render",
+    "ai-polish-modal": "/components/ai-polish-modal/ai-polish-modal"
+  }
+}
