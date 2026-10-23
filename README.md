@@ -6,6 +6,68 @@
 
 ---
 
+## 📱 效果演示
+
+### 核心操作演示（GIF）
+
+<table>
+<tr>
+<td align="center" width="240"><b>AI 证件照抠图换底</b><br><sub>上传照片 → 人像分割 → 蓝/白/红换底，一寸/二寸/简历尺寸裁剪</sub></td>
+<td align="center" width="240"><b>AI 润色 &amp; 简历编辑</b><br><sub>STAR 法则改写、量化成果，板块自由增删与拖拽排序</sub></td>
+<td align="center" width="240"><b>简历智能导入 &amp; 导出</b><br><sub>PDF/图片自动解析回填，实时预览并导出高清图片</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="screenshots/demo-id-photo.gif" width="235"></td>
+<td align="center"><img src="screenshots/demo-edit-polish.gif" width="235"></td>
+<td align="center"><img src="screenshots/demo-import-resume.gif" width="235"></td>
+</tr>
+</table>
+
+### 简历编辑（实时 A4 预览 · 证件照 · 模块化板块）
+
+<table>
+<tr>
+<td align="center"><img src="screenshots/edit-basic-info.png" width="300"><br>基本信息 + 实时 A4 预览 + 证件照入口</td>
+<td align="center"><img src="screenshots/edit-modules.png" width="300"><br>板块拖拽排序、重命名、自由添加 / 删除</td>
+</tr>
+</table>
+
+### AI 证件照 &amp; 简历成品
+
+<table>
+<tr>
+<td align="center"><img src="screenshots/id-photo.png" width="300"><br>蓝/白/红换底 + 一寸/二寸/简历尺寸</td>
+<td align="center"><img src="screenshots/resume-preview.png" width="300"><br>A4 成品预览（证件照自动排版到顶部）</td>
+</tr>
+</table>
+
+### JD 岗位匹配度分析
+
+<table>
+<tr>
+<td align="center"><img src="screenshots/jd-match-score.png" width="230"><br>匹配度总分（环形图）+ 技能对照</td>
+<td align="center"><img src="screenshots/jd-match-skills.png" width="230"><br>技能命中 / 缺口逐条分析与改进建议</td>
+<td align="center"><img src="screenshots/jd-match-ats.png" width="230"><br>缺失关键词 + ATS 简历体检</td>
+</tr>
+</table>
+
+### 30 套专业模板（全部免费，ATS 友好）
+
+<table>
+<tr>
+<td align="center"><img src="screenshots/templates-business.png" width="300"><br>经典商务风格</td>
+<td align="center"><img src="screenshots/templates-sidebar.png" width="300"><br>侧边栏风格（深蓝 / 墨绿 / 酒红 等）</td>
+</tr>
+<tr>
+<td align="center"><img src="screenshots/templates-tech.png" width="300"><br>技术风（进度条 / 标签云 / 时间轴）</td>
+<td align="center"><img src="screenshots/templates-creative.png" width="300"><br>创意风（花卉 / 波浪 / 手写标题）</td>
+</tr>
+</table>
+
+> 所有截图与动图均为本地真机/模拟器实际运行效果；完整素材见 [`screenshots/`](screenshots/) 目录。
+
+---
+
 ## ✨ 功能特性
 
 - **AI 简历润色**：基于自研 Prompt 框架（STAR 法则 + 量化成果 + 禁止编造数据），将口语化经历改写为专业、动词开头、带量化结果的简历表达，并对缺失数据主动留占位符而非杜撰。
